@@ -1,0 +1,36 @@
+{
+  "name": "simpleanilist",
+  "version": "1.0.0",
+  "description": "Simple anilist clone",
+  "main": "./",
+  "scripts": {
+    "start:prod": "tsc && node ./build/index",
+    "start:dev": "nodemon --exec ts-node ./src/index.ts"
+  },
+  "author": "Atsukoro",
+  "license": "MIT",
+  "dependencies": {
+    "@elastic/elasticsearch": "^8.2.1",
+    "@mikro-orm/core": "^5.2.0",
+    "@mikro-orm/mongodb": "^5.2.0",
+    "@types/jsonwebtoken": "^8.5.8",
+    "apollo-server-express": "^3.8.2",
+    "argon2": "^0.28.5",
+    "class-validator": "^0.13.2",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "global": "^4.4.0",
+    "graphql": "15.3.0",
+    "graphql-scalars": "^1.17.0",
+    "joi": "^17.6.0",
+    "jsonwebtoken": "^8.5.1",
+    "redis": "^4.1.0",
+    "type-graphql": "^1.1.1",
+    "typescript": "^4.7.3"
+  },
+  "devDependencies": {
+    "@types/connect-redis": "^0.0.18",
+    "@types/express-session": "^1.17.4",
+    "@types/joi": "^17.2.3"
+  }
+}

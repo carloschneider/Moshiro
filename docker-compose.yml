@@ -1,0 +1,29 @@
+version: '3'
+services:
+  database:
+    image: 'mongo'
+    container_name: 'mongo_container'
+    restart: always
+    environment:
+      - MONGO_INITDB_DATABASE=${DB_NAME}
+      - MONGO_INITDB_ROOT_USERNAME=${DB_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${DB_PASSWORD}
+    ports:
+      - '${DB_PORT}:${DB_PORT}'
+
+  cache: 
+    image: 'redis'
+    container_name: redis_container
+    ports:
+      - '${REDIS_PORT}:${REDIS_PORT}'
+
+  search: 
+    image: 'elastic/elasticsearch:8.3.1'
+    container_name: 'elasticseatch_container'
+    ports:
+      - '${ELASTIC_PORT}:${ELASTIC_PORT}'
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - xpack.security.transport.ssl.enabled=false
+    

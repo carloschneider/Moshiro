@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "target": "es2016",                               
+    "module": "commonjs",                               
+    "rootDir": "./src",     
+    "lib": [
+      "es5", "es6", "dom", "dom.iterable"
+    ],                            
+    "moduleResolution": "node",                      
+    "resolveJsonModule": true,                        
+    "allowJs": false,                                
+    "checkJs": false,                                
+    "outDir": "./build",                           
+    "removeComments": true,                          
+    "esModuleInterop": true,                                                
+    "forceConsistentCasingInFileNames": true,           
+    "strict": true,                                   
+    "noImplicitAny": true,                          
+    "strictNullChecks": true,                         
+    "strictFunctionTypes": true,                     
+    "noImplicitThis": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,                      
+    "noUnusedParameters": true,                       
+    "noImplicitReturns": true,                       
+    "skipLibCheck": true                              
+  }
+}
