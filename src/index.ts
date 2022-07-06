@@ -6,10 +6,6 @@ import { UserResolver } from './resolvers/user.resolver';
 import { ApolloServer } from 'apollo-server-express';
 import { userJwt, __prod__ } from './constants';
 import authChecker from './utils/authChecker';
-import {
-    typeDefs as scalarTypeDefs,
-    resolvers as scalarResolvers
-} from 'graphql-scalars';
 import { MikroORM } from '@mikro-orm/core';
 import { buildSchema } from 'type-graphql';
 import { verify } from 'jsonwebtoken';
@@ -18,8 +14,13 @@ import { config } from 'dotenv';
 import * as redisMod from 'redis';
 import express from 'express';
 import { AvailableIndexes } from './utils/indexer';
+import searchRouter from './routes/search';
+import uploadRouter from './routes/upload';
 import { Client } from '@elastic/elasticsearch';
-import e from 'express';
+import {
+    typeDefs as scalarTypeDefs,
+    resolvers as scalarResolvers
+} from 'graphql-scalars';
 
 function getCookie(name: string, cookies: string | undefined): string | undefined {
     if(!cookies) return undefined;
@@ -34,6 +35,7 @@ function getCookie(name: string, cookies: string | undefined): string | undefine
     }
 }
 
+export let elastic: Client;
 const main = async () => {
     config();
 
@@ -49,7 +51,6 @@ const main = async () => {
         debug: !__prod__
     });
 
-    let elastic: Client;
     try {
         elastic = new Client({
             node: `http://localhost:${process.env.ELASTIC_PORT || 9200}`,
@@ -140,28 +141,8 @@ const main = async () => {
         }
     });
 
-    app.get('/search', async(req: express.Request, res: express.Response) => {
-        if(!req.query['query'] || req.query['query']?.length == 0) {
-            return res.status(400).json({
-                error: "Please provide query with search string!"
-            });
-        };
-
-        let query  = {
-            index: [
-                AvailableIndexes.ANIME,
-                AvailableIndexes.CHARACTER,
-                AvailableIndexes.USER
-            ],
-            q: req.query['query']
-            
-        };
-
-        // @ts-ignore
-        const elRes = await elastic.search(query);
-
-        return res.status(200).json(elRes.hits.hits);
-    });
+    app.use('/search', searchRouter);
+    app.use('/upload', uploadRouter);
 
     const port = process.env.PORT || 3000;
     app.listen(port, () => {
