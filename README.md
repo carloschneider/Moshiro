@@ -17,7 +17,7 @@ Pengist is a platform for all anime lovers, manage completed or currently watchi
 ## Running backend
 ### Requirements for installation
 - Node.js (version 16.15.1)
-- Yarn package manager (install with npm install --locaion=global yarn)
+- Yarn package manager (install with npm install --location=global yarn)
 - Docker
 - Docker-compose
 - Redis, Mongo and elasticsearch Docker images (pull images with "docker pull <imagename>")
