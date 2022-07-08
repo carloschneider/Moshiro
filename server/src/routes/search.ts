@@ -18,7 +18,6 @@ router.get('/', async(req: express.Request, res: express.Response) => {
             AvailableIndexes.USER
         ],
         q: req.query['query']
-        
     };
 
     // @ts-ignore

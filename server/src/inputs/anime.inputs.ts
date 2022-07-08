@@ -1,4 +1,18 @@
-import { Field, InputType } from "type-graphql";
+import { Field, InputType, ObjectType } from "type-graphql";
+import { Anime } from "../entities/anime.entity";
+
+@ObjectType()
+class ErrorType {
+    @Field({
+        nullable: false
+    })
+    message!: string;
+
+    @Field({
+        nullable: true
+    })
+    field?: string;
+}
 
 @InputType()
 export class FetchAnimeInput {
@@ -6,6 +20,33 @@ export class FetchAnimeInput {
         nullable: true
     })
     _id?: string;
+}
+
+@ObjectType()
+export class FetchAnimeResponse {
+    @Field(() => Anime, {
+        nullable: true
+    })
+    anime?: Anime;
+
+    @Field(() => [ErrorType], {
+        nullable: true
+    })
+    errors?: ErrorType[]
+}
+
+@ObjectType()
+export class DeleteAnimeResponse {
+    @Field({
+        nullable: false,
+        description: "If the deletion succeeded or not"
+    })
+    success!: boolean;
+
+    @Field(() => [ErrorType], {
+        nullable: true
+    })
+    errors?: ErrorType[]
 }
 
 @InputType()

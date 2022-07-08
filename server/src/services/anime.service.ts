@@ -1,5 +1,5 @@
+import { CreateAnimeInput, DeleteAnimeResponse, FetchAnimeInput, FetchAnimeResponse } from "../inputs/anime.inputs";
 import { GqlContext } from "../constants";
-import { CreateAnimeInput, FetchAnimeInput } from "../inputs/anime.inputs";
 import { Anime } from "../entities/anime.entity";
 import { ObjectId } from "@mikro-orm/mongodb";
 import { ListInput } from "../inputs/user.inputs";
@@ -7,26 +7,90 @@ import { Character } from "../entities/character.entity";
 import { AnimeCharacterListInput } from "../inputs/character.inputs";
 import { CharacterSort } from "../inputs/character.inputs";
 import { indexDocument, AvailableIndexes, deleteDocument } from "../utils/indexer";
+import { Service } from "typedi";
 
-export async function getAnimeService(
-    { em, options, redis }: GqlContext & { options: FetchAnimeInput }
-): Promise<Anime | null> {
-    const data = {
-        ...options._id && { 
-            _id: new ObjectId(options._id.toString()) 
-        }
-    };
+@Service()
+export class AnimeService {
+    async get(
+        { em, options, redis }: GqlContext & { options: FetchAnimeInput }
+    ): Promise<FetchAnimeResponse> {
+        const data = {
+            ...options._id && { 
+                _id: new ObjectId(options._id.toString()) 
+            }
+        };
+    
+        const cached = await redis.get(`anime:${data._id?.toString()}`);
+        if(cached) return {
+            anime: JSON.parse(cached)
+        };
+    
+        const found: any = await em.findOne(Anime, data);
+    
+        if(!found) return {
+            errors: [
+                {
+                    message: "No anime found by this _id!"
+                }
+            ]
+        };
+    
+        await redis.setEx(`anime:${found._id?.toString()}`, 1000, JSON.stringify(found));
+    
+        return {
+            anime: found
+        };
+    }
 
-    const cached = await redis.get(`anime:${data._id?.toString()}`);
-    if(cached) return JSON.parse(cached);
+    async deleteAnime(
+        { em, id, elastic }: GqlContext & { id: string }
+    ): Promise<DeleteAnimeResponse> {
+        const found: any = await em.findOne(Anime, {
+            _id: new ObjectId(id)
+        });
+    
+        if(!found) {
+            return {
+                success: false,
+                errors: [
+                    {
+                        message: "Anime can't be found!"
+                    }
+                ]
+            }
+        };
+    
+        await deleteDocument(
+            AvailableIndexes.ANIME, 
+            elastic,
+            found?.index
+        );
+        
+        const animeDel = await em.nativeDelete(Anime, {
+            _id: new ObjectId(id)
+        })
+        
+        return {
+            success: Boolean(animeDel)
+        };
+    }
 
-    const found: any = await em.findOne(Anime, data);
+    async createAnime(
+        { em, options, elastic }: GqlContext & { options: CreateAnimeInput }
+    ): Promise<Anime> {
+        const newAnime = em.create(Anime, options);
 
-    if(!found) return null;
-
-    await redis.setEx(`anime:${found._id?.toString()}`, 1000, JSON.stringify(found));
-
-    return found;
+        const indexId = await indexDocument(
+            AvailableIndexes.ANIME,
+            newAnime, 
+            elastic
+        );
+        newAnime.index = indexId;
+        
+        await em.persistAndFlush(newAnime);
+    
+        return newAnime;
+    }
 }
 
 export async function getUsersAnimeList(
@@ -53,43 +117,6 @@ export async function getUsersAnimeList(
     })
 
     return data;
-}
-
-export async function deleteAnimeService(
-    { em, id, elastic }: GqlContext & { id: string }
-): Promise<boolean> {
-    const found: any = await em.findOne(Anime, {
-        _id: new ObjectId(id)
-    });
-
-    await deleteDocument(
-        AvailableIndexes.ANIME, 
-        elastic,
-        found?.index
-    );
-    
-    const animeDel = await em.nativeDelete(Anime, {
-        _id: new ObjectId(id)
-    })
-    
-    return Boolean(animeDel);
-}
-
-export async function createAnimeService(
-    { em, options, elastic }: GqlContext & { options: CreateAnimeInput }
-): Promise<Anime> {
-    const newAnime = em.create(Anime, options);
-
-    const indexId = await indexDocument(
-        AvailableIndexes.ANIME,
-        newAnime, 
-        elastic
-    );
-    newAnime.index = indexId;
-    
-    await em.persistAndFlush(newAnime);
-
-    return newAnime;
 }
 
 export async function fetchAnimeCharacters(

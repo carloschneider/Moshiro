@@ -15,8 +15,8 @@ import * as redisMod from 'redis';
 import express from 'express';
 import { AvailableIndexes } from './utils/indexer';
 import searchRouter from './routes/search';
-import uploadRouter from './routes/upload';
 import { Client } from '@elastic/elasticsearch';
+import { Container } from 'typedi';
 import {
     typeDefs as scalarTypeDefs,
     resolvers as scalarResolvers
@@ -126,6 +126,7 @@ const main = async () => {
                 UserResolver,
                 CharacterResolver
             ],
+            container: Container,
             authChecker: authChecker,
         }),
         context: ({ req, res }) => ({ em: orm.em, req, res, redis, elastic })
@@ -142,7 +143,6 @@ const main = async () => {
     });
 
     app.use('/search', searchRouter);
-    app.use('/upload', uploadRouter);
 
     const port = process.env.PORT || 3000;
     app.listen(port, () => {

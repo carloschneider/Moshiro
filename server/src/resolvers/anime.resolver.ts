@@ -1,18 +1,21 @@
+import { FetchAnimeInput, CreateAnimeInput, DeleteAnimeResponse, FetchAnimeResponse } from "../inputs/anime.inputs";
+import { AnimeService } from "../services/anime.service";
 import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { Anime } from "../entities/anime.entity";
-import { ObjectId } from '@mikro-orm/mongodb';
 import { GqlContext } from "../constants";
-import { FetchAnimeInput, CreateAnimeInput } from "../inputs/anime.inputs";
-import { getAnimeService, deleteAnimeService, createAnimeService } from "../services/anime.service";
 
 @Resolver()
 export class AnimeResolver {
-    @Query(() => Anime)
+    constructor(
+        private readonly service: AnimeService,
+    ){};
+
+    @Query(() => FetchAnimeResponse)
     async anime(
         @Ctx() { em, res, req, redis, elastic }: GqlContext,
         @Arg('options') options: FetchAnimeInput
-    ): Promise<Anime | null> {
-        return getAnimeService({ em, options, req, res, redis, elastic });
+    ): Promise<FetchAnimeResponse> {
+        return this.service.get({ em, options, req, res, redis, elastic });
     }
 
     @Authorized(["USER"])
@@ -21,15 +24,15 @@ export class AnimeResolver {
         @Ctx() { em, req, res, redis, elastic }: GqlContext,
         @Arg('options') options: CreateAnimeInput,
     ): Promise<Anime> {
-        return createAnimeService({ em, options, req, res, redis, elastic });
+        return this.service.createAnime({ em, options, req, res, redis, elastic })
     } 
 
     @Authorized(["USER"])
-    @Mutation(() => Boolean)
+    @Mutation(() => DeleteAnimeResponse)
     async deleteAnime(
         @Ctx() { em, res, req, redis, elastic }: GqlContext,
         @Arg("id", () => String) id: string
-    ): Promise<boolean> {
-        return deleteAnimeService({ em, id, req, res, redis, elastic });
+    ): Promise<DeleteAnimeResponse> {
+        return this.service.deleteAnime({ em, id, req, res, redis, elastic });
     }
 }

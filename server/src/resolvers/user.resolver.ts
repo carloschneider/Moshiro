@@ -17,22 +17,24 @@ import {
     ToggleResponse,
     ToggleInput
 } from '../inputs/user.inputs';
-import { 
-    toggleAnimeStatusService,
-    meService,
-    loginService,
-    registerService
-} from '../services/user.service';
+import { Service } from 'typedi';
+import { User } from '../entities/user.entity';
+import { UserService } from '../services/user.service';
 
-@Resolver()
+@Service()
+@Resolver(() => User)
 export class UserResolver {
+    constructor(
+        private readonly service: UserService,
+    ){}
+
     @Authorized(["USER"])
     @Mutation(() => ToggleResponse)
     async toggleAnimeStatus(
         @Ctx() { req, res, em, redis, elastic }: GqlContext,
         @Arg('options') options: ToggleInput
     ): Promise<ToggleResponse> {
-        return toggleAnimeStatusService({ req, em, res, options, redis, elastic });
+        return this.service.toggleAnimeStatus({ em, req, res, redis, elastic, options });
     }
 
     @Authorized(["USER"])
@@ -40,7 +42,7 @@ export class UserResolver {
     async me(
         @Ctx() { em, req, res, redis, elastic }: GqlContext
     ): Promise<MeResponse> {
-        return meService({ em, req, res, redis, elastic });
+        return this.service.me({ em, req, res, redis, elastic });
     }
 
     @Mutation(() => AuthResponse)
@@ -48,7 +50,7 @@ export class UserResolver {
         @Ctx() { em, res, req, redis, elastic }: GqlContext,
         @Arg('options') options: RegisterInput
     ): Promise<AuthResponse> {
-        return registerService({ req, em, options, res, redis, elastic });
+        return this.service.register({ req, em, options, res, redis, elastic });
     }
 
     @Mutation(() => AuthResponse)
@@ -56,6 +58,6 @@ export class UserResolver {
         @Ctx() { em, res, req, redis, elastic }: GqlContext,
         @Arg('options') options: LoginInput
     ): Promise<AuthResponse> {
-        return loginService({ res, em, options, req, redis, elastic });
+        return this.service.login({ req, em, options, res, redis, elastic });
     }
 }
