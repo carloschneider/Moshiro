@@ -1,6 +1,6 @@
 import { Service } from "typedi";
 import { Activity } from "../entities/activity.entity";
-import { FetchActivityInput, FetchActivityResponse } from "../inputs/activity.inputs";
+import { FetchActivitiesInput, FetchActivitiesResponse, FetchActivityInput, FetchActivityResponse } from "../inputs/activity.inputs";
 import { GqlContext } from "../constants";
 import { ObjectId } from "@mikro-orm/mongodb";
 
@@ -25,6 +25,18 @@ export class ActivityService {
 
         return {
             activity: found
+        };
+    }
+
+    async getActivities(
+        { em, options }: GqlContext & { options: FetchActivitiesInput }
+    ): Promise<FetchActivitiesResponse> {
+        const found = await em.find(Activity, {
+            boundTo: new ObjectId(options.byUserId.toString())
+        });
+
+        return {
+            activities: found
         };
     }
 }

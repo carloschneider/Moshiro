@@ -1,6 +1,7 @@
 import { Entity, PrimaryKey, Property } from "@mikro-orm/core";
 import { ObjectId } from "@mikro-orm/mongodb";
 import { Field, ObjectType, registerEnumType } from "type-graphql";
+import { InputActivityType } from "../inputs/user.inputs";
 import { Anime } from "./anime.entity";
 import { User } from "./user.entity";
 
@@ -8,18 +9,6 @@ export enum ActivityType {
     TEXT = 'text',
     ANIME = 'anime'
 }
-
-export enum AnimeStateType {
-    WATCHING = 'watching',
-    DROPPED = 'dropped',
-    COMPLETED = 'completed',
-    PAUSED = 'paused'
-}
-
-registerEnumType(AnimeStateType, {
-    name: "AnimeStateType",
-    description: "The anime activity state selected by user"
-})
 
 registerEnumType(ActivityType, {
     name: "ActivityType",
@@ -72,8 +61,8 @@ export class Activity {
     @Property({
         nullable: true
     })
-    @Field(() => AnimeStateType, {
+    @Field(() => InputActivityType, {
         nullable: true
     })
-    animeActivityType?: AnimeStateType;
+    animeActivityType?: InputActivityType;
 }

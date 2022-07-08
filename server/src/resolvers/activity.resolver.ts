@@ -1,7 +1,7 @@
 import { Arg, Ctx, Query, Resolver } from "type-graphql";
 import { Activity } from "../entities/activity.entity";
 import { Service } from "typedi";
-import { FetchActivityInput, FetchActivityResponse } from "../inputs/activity.inputs";
+import { FetchActivitiesInput, FetchActivitiesResponse, FetchActivityInput, FetchActivityResponse } from "../inputs/activity.inputs";
 import { GqlContext } from "../constants";
 import { ActivityService } from "../services/activity.service";
 
@@ -18,5 +18,13 @@ export class ActivityResolver {
         @Arg('options') options: FetchActivityInput,
     ): Promise<FetchActivityResponse> {
         return this.service.getActivity({ em, options, res, redis, req, elastic });
+    }
+
+    @Query(() => FetchActivitiesResponse) 
+    async fetchActivities(
+        @Ctx() { em, res, req, redis, elastic }: GqlContext,
+        @Arg('options') options: FetchActivitiesInput,
+    ): Promise<FetchActivitiesResponse> {
+        return this.service.getActivities({ em, options, res, redis, req, elastic })
     }
 }

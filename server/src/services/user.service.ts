@@ -221,7 +221,8 @@ export class UserService {
         const newActivity = em.create(Activity, {
             anime: objectAnimeId,
             boundTo: req.user._id,
-            type: ActivityType.ANIME
+            type: ActivityType.ANIME,
+            animeActivityType: options.type
         });
         await em.persistAndFlush(newActivity);
     

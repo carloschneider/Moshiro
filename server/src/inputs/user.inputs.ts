@@ -22,7 +22,7 @@ export class LoginInput {
     password!: string;
 }
 
-enum InputActivityType {
+export enum InputActivityType {
     WATCHING = 'watching',
     DROPPED = 'dropped',
     PLANNING = 'planning',

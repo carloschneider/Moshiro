@@ -1,6 +1,7 @@
 'use strict';
 import 'reflect-metadata';
 import { CharacterResolver } from './resolvers/character.resolver';
+import { ActivityResolver } from './resolvers/activity.resolver';
 import { AnimeResolver } from './resolvers/anime.resolver';
 import { UserResolver } from './resolvers/user.resolver';
 import { ApolloServer } from 'apollo-server-express';
@@ -124,7 +125,8 @@ const main = async () => {
             resolvers: [
                 AnimeResolver,
                 UserResolver,
-                CharacterResolver
+                CharacterResolver,
+                ActivityResolver
             ],
             container: Container,
             authChecker: authChecker,
