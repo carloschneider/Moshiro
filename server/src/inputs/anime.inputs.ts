@@ -2,7 +2,7 @@ import { Field, InputType, ObjectType } from "type-graphql";
 import { Anime } from "../entities/anime.entity";
 
 @ObjectType()
-class ErrorType {
+export class ErrorType {
     @Field({
         nullable: false
     })

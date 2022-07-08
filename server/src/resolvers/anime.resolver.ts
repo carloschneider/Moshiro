@@ -3,8 +3,10 @@ import { AnimeService } from "../services/anime.service";
 import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { Anime } from "../entities/anime.entity";
 import { GqlContext } from "../constants";
+import { Service } from "typedi";
 
-@Resolver()
+@Service()
+@Resolver(() => Anime)
 export class AnimeResolver {
     constructor(
         private readonly service: AnimeService,
