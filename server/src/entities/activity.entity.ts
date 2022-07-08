@@ -1,5 +1,6 @@
 import { Entity, PrimaryKey, Property } from "@mikro-orm/core";
 import { ObjectId } from "@mikro-orm/mongodb";
+import { DateResolver } from "graphql-scalars";
 import { Field, ObjectType, registerEnumType } from "type-graphql";
 import { InputActivityType } from "../inputs/user.inputs";
 import { Anime } from "./anime.entity";
@@ -23,6 +24,13 @@ export class Activity {
         description: "Unique identificator of the activity"
     })
     _id!: ObjectId;
+
+    @Field(() => DateResolver, {
+        nullable: true,
+        description: "Creation date of the activity",
+        defaultValue: new Date()
+    })
+    createdAt?: Date = new Date();
 
     @Property({
         nullable: false
