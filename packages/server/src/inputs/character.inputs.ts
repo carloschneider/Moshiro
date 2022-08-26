@@ -1,6 +1,15 @@
 import { Field, InputType,  registerEnumType } from "type-graphql";
 import { DateResolver, ObjectIDResolver } from "graphql-scalars";
 
+@InputType() 
+export class DeleteCharacterInput {
+    @Field(() => ObjectIDResolver, {
+        nullable: false,
+        description: "Unique identificator of the anime you want to delete"
+    }) 
+    _id!: string;
+}
+
 @InputType()
 export class CreateCharacterInput {
     @Field(() => [ObjectIDResolver], {

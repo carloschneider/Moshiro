@@ -1,8 +1,13 @@
-import { CharactersFetchInput, CreateCharacterInput } from "../inputs/character.inputs";
 import { Character } from "../entities/character.entity";
 import { GqlContext } from "../constants";
 import { indexDocument, AvailableIndexes } from "../utils/indexer";
 import { Service } from "typedi";
+import { 
+    CharactersFetchInput, 
+    CreateCharacterInput, 
+    DeleteCharacterInput 
+} from "../inputs/character.inputs";
+import { ObjectId } from "@mikro-orm/mongodb";
 
 @Service()
 export class CharacterService {
@@ -23,6 +28,16 @@ export class CharacterService {
         return newCharacter;
     }
 
+    async deleteCharacter(
+        { em, options }: GqlContext & { options: DeleteCharacterInput }
+    ): Promise<boolean> {
+        return Boolean(
+            em.nativeDelete(Character, {
+                _id: new ObjectId(options._id)
+            })
+        );
+    }
+
     async fetchCharacter(
         { redis, em, options }: GqlContext & { options: CharactersFetchInput }
     ): Promise<Character | null> {
@@ -38,8 +53,9 @@ export class CharacterService {
         };
     
         const dbFound = await em.findOne(Character, findQuery);
-        
+
         await redis.setEx(`characters:${options._id}`, 12000, JSON.stringify(dbFound));
+
         return dbFound;
     }
 }
