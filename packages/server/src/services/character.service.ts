@@ -7,7 +7,7 @@ import { Service } from "typedi";
 @Service()
 export class CharacterService {
     async createCharacter(
-        { em, options, elastic }: GqlContext & { options: CreateCharacterInput }
+        { em, options, elastic }: GqlContext & { options: CreateCharacterInput | any }
     ): Promise<Character> {
         const newCharacter = em.create(Character, options);
 
