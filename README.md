@@ -9,7 +9,7 @@
 </div>
 
 ## Basic Overview
-Moshiro is a basic anime platform/database, list or anything you want to call it. The purpose of this app is to be scalable and fast, as it should be. Project consists of main server (Gateway of the application, authentication, serving json data), CDNs, storage (CDNs are sending all the images to long-term image storage and then cache them itself) and frontend
+Moshiro is a basic anime platform/database, list or anything you want to call it. 
 
 ## Running
 - This part of README will be empty for now, Moshiro is still in development and tech-stack can change.
