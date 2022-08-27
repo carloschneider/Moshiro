@@ -1,5 +1,5 @@
 import crypto from 'node:crypto';
-import argon2 from 'argon2';
+import { redisClient } from '.';
 import { 
     FastifyReply, 
     FastifyRequest 
@@ -19,30 +19,30 @@ export const authHandler = async function(
     req: FastifyRequest & { body: any }, 
     res: FastifyReply
 ): Promise<FastifyReply> {
-    if(!process.env.ENCRKEY || !process.env.COMSECRET) {
+    if(!process.env.ENCRKEY) {
         return res.status(500).send({
             reason: "Please specify all encryption keys!"
         });
     }; 
-
-    const hashValid: boolean = await argon2.verify(
-        req.body.hash, 
-        process.env.COMSECRET || ""
-    );
-    if(!hashValid) {
-        return res.status(401).send({
-            reason: "Hash does not match!"
-        });
-    };
-
+    
     const rand: string = crypto
         .randomBytes(16)
         .toString("hex")
         .slice(0, 16);
 
-    const message: string = crypto
-        .randomBytes(128)
-        .toString("base64");
+    // Constructing encrypted key - as described in jsdoc of this function
+    let message = JSON.stringify({
+        type: req.body.type,
+        validFor: req.body.validFor,
+        rand_char: crypto.randomBytes(64).toString(),
+    });
+
+    await redisClient.setEx(
+        message,
+        // Redis expiration is defined in seconds
+        req.body.validFor / 60,
+        req.body.type
+    );
 
     const encrypter = crypto.createCipheriv(
         'aes-256-cbc', 
