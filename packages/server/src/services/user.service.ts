@@ -9,10 +9,6 @@ import {
 import { ObjectId } from '@mikro-orm/mongodb';
 import { GqlContext } from '../constants';
 import { User } from '../entities/user.entity';
-import { 
-    loginSchema,
-    registerSchema
-} from '../validations/user.validation';
 import { sign } from 'jsonwebtoken';
 import { hash, verify } from 'argon2';
 import { AvailableIndexes, indexDocument } from '../utils/indexer';
@@ -29,20 +25,6 @@ export class UserService {
                 errors: [{
                     message: "Something went wrong during authentication, please try again later."
                 }]
-            }
-        }
-    
-        const { error } = registerSchema.validate(options, {
-            abortEarly: false
-        });
-        if(error) {
-            return {
-                errors: error.details.map(el => {
-                    return {
-                        message: el.message,
-                        field: el.path.toString()
-                    }
-                })
             }
         }
     
@@ -105,20 +87,6 @@ export class UserService {
                 errors: [{
                     message: "Something went wrong during authentication, please try again later."
                 }]
-            }
-        }
-    
-        const { error } = loginSchema.validate(options, {
-            abortEarly: false
-        });
-        if(error) {
-            return {
-                errors: error.details.map(el => {
-                    return {
-                        message: el.message,
-                        field: el.path.toString()
-                    }
-                })
             }
         }
     

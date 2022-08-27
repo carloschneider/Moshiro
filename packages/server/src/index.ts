@@ -3,7 +3,6 @@ import 'reflect-metadata';
 import { CharacterResolver } from './resolvers/character.resolver';
 import { ActivityResolver } from './resolvers/activity.resolver';
 import { AnimeResolver } from './resolvers/anime.resolver';
-import { FeedResolver } from './resolvers/feed.resolver';
 import { UserResolver } from './resolvers/user.resolver';
 import { ApolloServer } from 'apollo-server-express';
 import { userJwt, __prod__ } from './constants';
@@ -130,7 +129,6 @@ const main = async () => {
                 UserResolver,
                 CharacterResolver,
                 ActivityResolver,
-                FeedResolver
             ],
             container: Container,
             authChecker: authChecker,

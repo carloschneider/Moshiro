@@ -1,5 +1,7 @@
 import { Field, InputType,  registerEnumType } from "type-graphql";
 import { DateResolver, ObjectIDResolver } from "graphql-scalars";
+import { IsBase64, IsDate, IsUrl, Length, Max, MaxLength, Min } from "class-validator";
+import { IsImageFormat } from "../decorators/isImageFormat";
 
 @InputType() 
 export class DeleteCharacterInput {
@@ -15,32 +17,39 @@ export class CreateCharacterInput {
     @Field(() => [ObjectIDResolver], {
         description: "Anime shows that this character showed in"
     })
+    @MaxLength(10, {
+        each: true
+    })
     boundTo: string[] = [];
 
     @Field(() => String, {
         nullable: false,
         description: "Name of the character"
     })
+    @Length(2, 64)
     name!: string;
 
     @Field(() => DateResolver, {
         nullable: true,
         description: "Birth day of the character"
     })
+    @IsDate()
     birthday?: Date;
 
     @Field(() => String, {
         nullable: true,
         description: "Brief description of the character"
     })
+    @Length(10, 4096)
     description?: string;
 
     @Field(() => String, {
         nullable: true,
-        defaultValue: null,
-        description: "Url path of the image following to 'avatar' of the character"
+        description: "A base64 encoded string with character's image data"
     })
-    imageUrl?: string | null = null; 
+    @IsBase64()
+    @IsImageFormat(['jpg', 'png'])
+    imageUrl?: string;
 };
 
 export enum CharacterSort {
@@ -68,11 +77,15 @@ export class AnimeCharacterListInput {
     @Field(() => Number, {
         nullable: true
     }) 
+    @Min(1)
+    @Max(1000)
     page?: number;
 
     @Field(() => Number, {
         nullable: true
     })
+    @Min(1)
+    @Max(25)
     perPage?: number;
 
     @Field(() => CharacterSort, {

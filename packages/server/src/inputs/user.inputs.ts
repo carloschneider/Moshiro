@@ -1,24 +1,34 @@
+import { IsEmail, Length, MaxLength, MinLength } from 'class-validator';
 import { Field, InputType, ObjectType, registerEnumType } from 'type-graphql';
 import { User } from '../entities/user.entity';
 
 @InputType()
 export class RegisterInput {
     @Field(() => String)
+    @Length(3, 64)
     username!: string;
 
     @Field(() => String)
+    @IsEmail()
+    @Length(1, 1024)
     email!: string;
 
     @Field(() => String)
+    @MinLength(8)
+    @MaxLength(2048)
     password!: string;
 }
 
 @InputType()
 export class LoginInput {
     @Field(() => String)
+    @IsEmail()
+    @Length(1, 1024)
     email!: string;
 
     @Field(() => String)
+    @MinLength(8)
+    @MaxLength(2048)
     password!: string;
 }
 
