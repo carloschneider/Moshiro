@@ -1,5 +1,6 @@
-import Fastify from 'fastify';
 import { config } from 'dotenv';
+import * as redis from 'redis';
+import Fastify from 'fastify';
 
 // Routes
 import {
@@ -30,6 +31,15 @@ fastify.route({
     schema: authSchema,
     handler: authHandler
 });
+
+redis.createClient()
+    .connect()
+    .then(() => {
+        console.log("Redis client succefully connected!");
+    })
+    .catch(err => {
+        console.log("Error happened while estabilishing connection with redis: ", err);
+    });
 
 fastify.listen({
     port: process.env.PORT ? parseInt(process.env.PORT) : 3000 
