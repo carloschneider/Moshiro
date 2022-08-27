@@ -14,7 +14,7 @@ import { verify } from 'jsonwebtoken';
 import { req } from './constants';
 import { config } from 'dotenv';
 import * as redisMod from 'redis';
-import express from 'express';
+import express, { application } from 'express';
 import { AvailableIndexes } from './utils/indexer';
 import searchRouter from './routes/search';
 import { Client } from '@elastic/elasticsearch';
@@ -101,7 +101,9 @@ const main = async () => {
         : undefined;
 
         return next();
-    })
+    });
+    app.use(express.json({ limit: '10mb' }))
+    app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
     const redis = redisMod.createClient();
 
@@ -132,6 +134,7 @@ const main = async () => {
             ],
             container: Container,
             authChecker: authChecker,
+            validate: true
         }),
         context: ({ req, res }) => ({ em: orm.em, req, res, redis, elastic })
     });

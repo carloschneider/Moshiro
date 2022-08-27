@@ -1,5 +1,16 @@
-import { Field, InputType, ObjectType } from "type-graphql";
+import { IsImageFormat } from "../decorators/isImageFormat";
+import { IsValidUnixTime } from "../decorators/isValidUnixTime";
 import { Anime } from "../entities/anime.entity";
+import { 
+    Field, 
+    InputType, 
+    ObjectType 
+} from "type-graphql";
+import { 
+    Max,
+    MaxLength, Min, MinLength,
+    IsBase64,
+} from "class-validator";
 
 @ObjectType()
 export class ErrorType {
@@ -53,20 +64,30 @@ export class DeleteAnimeResponse {
 export class CreateAnimeInput {
     @Field({
         nullable: true,
-        description: "URL pointing to location of banner"
+        description: "A base64 encoded string with cover image data"
     })
-    bannerUrl?: string;
+    @IsBase64()
+    @IsImageFormat(['jpg', 'png'], {
+        message: "Image should be in .jpg or .png format!"
+    })
+    cover?: string;
 
     @Field({
-        description: "URL pointing to location of cover",
+        description: "A base64 encoded string with banner image data",
         nullable: true
     })
-    coverUrl?: string;
+    @IsBase64()
+    @IsImageFormat(['jpg', 'png'], {
+        message: "Image should be in .jpg or .png format!"
+    })
+    banner?: string;
 
     @Field({
         description: "Anime title",
         nullable: false
     })
+    @MaxLength(128)
+    @MinLength(1)
     title!: string;
 
     @Field({
@@ -79,12 +100,16 @@ export class CreateAnimeInput {
         nullable: false,
         description: "Number of episodes"
     })
+    @Min(1)
+    @Max(10000)
     episodes!: number;
 
     @Field({
         nullable: true, 
         description: "Duration of one episode (in minutes)"
     })
+    @Min(1)
+    @Max(1000)
     epDuration?: number;
 
     @Field({
@@ -92,17 +117,22 @@ export class CreateAnimeInput {
         nullable: true,
         description: "Release date of the anime"
     })
+    @IsValidUnixTime()
     releasedOn?: number;
 
     @Field({
         nullable: false,
         description: "Brief description of the anime"
     })
+    @MinLength(64)
+    @MaxLength(4096)
     description!: string;
 
     @Field({
         nullable: true,
         defaultValue: 0,
+        deprecationReason: `This was previously made to rank results in search, 
+        but it's now automatically done by elasticsearch`,
         description: `Everytime user does an interaction with this anime, 
         for example adding the show to user's list, popularity will be incremented by one`
     })
@@ -116,6 +146,9 @@ export class CreateAnimeInput {
             description: "Array of tags, for example (Romance, Action, Mystery)"
         }
     )
+    @MaxLength(10, {
+        each: true
+    })
     tags?: string[]
 
     @Field(
@@ -125,13 +158,8 @@ export class CreateAnimeInput {
             description: "Array of studio ids"
         }
     )
+    @MaxLength(10, {
+        each: true
+    })
     studios!: string[]
-
-    @Field(
-        () => [String],
-        {
-            description: "Array of user ids"
-        }
-    )
-    favourites!: string[]
 }

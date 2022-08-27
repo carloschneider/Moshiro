@@ -90,7 +90,7 @@ export class UserService {
         }
     
         const token = sign({ _id: newUser._id }, process.env.JWT_SECRET);
-        res.setHeader("Set-Cookie", `token=Bearer ${token};`);
+        res.setHeader("Set-Cookie", `token=Bearer ${token};SameSite=None; Secure;`);
     
         return {
             user: newUser
@@ -146,7 +146,7 @@ export class UserService {
         }
         
         const token = sign({ _id: user._id }, process.env.JWT_SECRET);
-        res.setHeader("Set-Cookie", `token=Bearer ${token};`);
+        res.setHeader("Set-Cookie", `token=Bearer ${token};SameSite=None; Secure;`);
     
         return {
             user: user

@@ -25,24 +25,6 @@ export class Anime {
     index?: String;
 
     @Field(() => String, {
-        nullable: true,
-        description: "URL link to cover of the show that's representing the show"
-    })
-    @Property({
-        nullable: true
-    })
-    coverUrl?: string;
-
-    @Field(() => String, {
-        nullable: true,
-        description: "URL link to banner of the show that is representing the show"
-    })
-    @Property({
-        nullable: true
-    })
-    bannerUrl?: string;
-
-    @Field(() => String, {
         description: "Format of the show"
     })
     @Property()
@@ -119,14 +101,6 @@ export class Anime {
     })
     @Property()
     episodes!: number;
-
-    @Field(() => [String], {
-        description: "Array of users that liked this anime"
-    })
-    @Property({
-        default: []
-    })
-    favourites!: [string];
 
     @Field(() => [Character] || null, {
         description: "Array of all characters that are presnent in the show",

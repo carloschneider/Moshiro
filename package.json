@@ -5,6 +5,7 @@
     "packages/*"
   ],
   "dependencies": {
+    "class-validator": "^0.13.2",
     "server": "*"
   },
   "devDependencies": {
