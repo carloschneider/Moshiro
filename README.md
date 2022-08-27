@@ -1,7 +1,4 @@
-<p align="center"><img style="width: 100px; height: 100px;" width=60% src="https://i.postimg.cc/dtjMj8S0/165718081026287107.png"></p>
-<h1 align="center">
-    Pengist
-</h1>
+<p align="center"><img style="width: 500px; height: 100px;" width=60% src="https://files.catbox.moe/h3fphf.png"></p>
 
 <div style="margin-top=10px" align="center">
     <img src="https://img.shields.io/badge/Node.js-16.15.1-%23009933">
@@ -12,46 +9,11 @@
 </div>
 
 ## Basic Overview
-Pengist is a platform for all anime lovers, manage completed or currently watching anime and explore more!
+Moshiro is a basic anime platform/database, list or anything you want to call it. The purpose of this app is to be scalable and fast, as it should be. Project consists of main server (Gateway of the application, authentication, serving json data), CDNs, storage (CDNs are sending all the images to long-term image storage and then cache them itself) and frontend
 
-## Running backend
-### Requirements for installation
-- Node.js (version 16.15.1)
-- Yarn package manager (install with npm install --location=global yarn)
-- Docker
-- Docker-compose
-- Redis, Mongo and elasticsearch Docker images (pull images with "docker pull <imagename>")
+## Running
+- This part of README will be empty for now, Moshiro is still in development and tech-stack can change.
 
-### Installation process
-Cd into the backend directory and install all dependencies with yarn
-```bash
-cd backend
-yarn install 
-```
-
-Next, fill out the dotenv file like that, the keys are pretty self-describing
-```env
-DB_PORT=
-REDIS_PORT=
-DB_NAME=
-JWT_SECRET=
-DB_USERNAME=
-DB_PASSWORD=
-ORIGIN=
-ELASTIC_PORT=
-```
-
-Create new Docker volumes
-```bash
-docker-compose up
-```
-
-## Start production or development process and the backend is running
-```bash
-yarn run start:dev
-yarn run start:prod
-```
-
-# Contributing
+## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 Please make sure to update tests as appropriate.
