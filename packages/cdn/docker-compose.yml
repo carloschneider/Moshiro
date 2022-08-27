@@ -1,7 +1,0 @@
-version: '3'
-services:
-  cache: 
-    container_name: 'cache_redis'
-    image: 'redis'
-    ports:
-      - '${REDIS_PORT}:${REDIS_PORT}'
