@@ -5,7 +5,7 @@
   "main": "./",
   "scripts": {
     "start:prod": "tsc && node ./build/index",
-    "start:dev": "nodemon --exec ts-node ./src/index.ts"
+    "start:dev": "nodemon --exec ts-node ./src/index.ts NODE_ENV=prod"
   },
   "dependencies": {
     "argon2": "^0.29.1",

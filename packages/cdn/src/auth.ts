@@ -62,6 +62,38 @@ export const authHandler = async function(
 };
 
 export const authSchema = {
+    body: {
+        type: 'object',
+        required: ['hash', 'type', 'validFor'],
+        properties: {
+            /*
+                Hashed key that is used to make sure the connection can only be 
+                estabilished between main server and CDN nodes
+            */
+            hash: {
+                type: 'string'
+            },
+
+            /*
+                This is specifying the type of data that will be uploaded, for example, 
+                if the type is "avatar", anime cover can't be uploaded using this key
+            */
+            type: {
+                type: 'string'
+            },
+
+            /*
+                Key expiration in miliseconds, because the CDNs are sometimes pinged, latency
+                is added to the expiration to make sure the number is accurate 
+            */
+            validFor: { 
+                type: 'number', 
+                minimum: 1000,
+                maximum: 180000,
+            }
+        }
+    },
+
     response: {
         200: {
             type: 'object', 

@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 
-export const uploadHandler = function(req: FastifyRequest, res: FastifyReply) {
+export const uploadHandler = function(_req: FastifyRequest, res: FastifyReply) {
     res.send("Uploading...");
 }
 
