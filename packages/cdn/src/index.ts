@@ -11,6 +11,9 @@ import {
     authHandler, 
     authSchema 
 } from './auth';
+import { 
+    pingHandler 
+} from './ping';
 
 export let redisClient: redis.RedisClientType;
 
@@ -33,6 +36,12 @@ async function main() {
         url: '/auth',
         schema: authSchema,
         handler: authHandler
+    });
+
+    fastify.route({
+        method: 'GET',
+        url: '/ping',
+        handler: pingHandler,
     });
     
     redisClient = await redis.createClient();
