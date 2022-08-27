@@ -6,6 +6,10 @@ import {
     uploadHandler,
     uploadSchema
 } from './upload';
+import { 
+    authHandler, 
+    authSchema 
+} from './auth';
 
 config();
 
@@ -18,6 +22,13 @@ fastify.route({
     url: '/upload',
     schema: uploadSchema,
     handler: uploadHandler
+});
+
+fastify.route({
+    method: "POST", 
+    url: '/auth',
+    schema: authSchema,
+    handler: authHandler
 });
 
 fastify.listen({
