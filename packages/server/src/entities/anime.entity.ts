@@ -1,6 +1,6 @@
 import { Entity, PrimaryKey, Property } from "@mikro-orm/core";
 import { Arg, Ctx, emitSchemaDefinitionFile, Field, Int, ObjectType } from "type-graphql";
-import { DateTimeResolver, ObjectIDResolver } from "graphql-scalars";
+import { DateTimeResolver, ObjectIDResolver, URLResolver } from "graphql-scalars";
 import { ObjectId } from "@mikro-orm/mongodb";
 import { Character } from "./character.entity";
 import { GqlContext } from "../constants";
@@ -18,6 +18,22 @@ export class Anime {
         unique: true
     })
     _id!: ObjectId;
+
+    @Field(() => String, {
+        description: "unique identificator of the image"
+    })
+    @Property({
+        nullable: true
+    })
+    cover?: string;
+
+    @Field(() => String, {
+        description: "unique identificator of the image"
+    })
+    @Property({
+        nullable: true
+    })
+    banner?: string;
 
     @Property({
         nullable: true

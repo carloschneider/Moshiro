@@ -30,6 +30,15 @@ export class User {
     })
     index?: String;
 
+    @Field(() => String, {
+        nullable: true,
+        description: "Unique identificator of the image leading to user's avatar"
+    })
+    @Property({
+        nullable: true
+    })
+    avatar?: String;
+
     @Field(() => Boolean, {
         description: "Identifies if user is administrator or not",
         defaultValue: false

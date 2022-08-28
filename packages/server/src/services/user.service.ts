@@ -16,6 +16,7 @@ import {
     ToggleInput, 
     ToggleResponse 
 } from '../inputs/user.inputs';
+import * as uuid from 'uuid';
 
 @Service()
 export class UserService {
@@ -102,8 +103,10 @@ export class UserService {
 
         // Save user avatar
         if(avatarBase64) {
+            options.avatar = uuid.v4();
+            
             fs.writeFile(
-                `static/avatar/avatar_${newUser._id}.png`, 
+                `static/avatar/avatar_${options.avatar}.png`, 
                 Buffer.from(avatarBase64, 'base64'),
                 function(_) {
                     return;

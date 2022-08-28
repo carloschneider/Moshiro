@@ -10,6 +10,7 @@ import { indexDocument, AvailableIndexes, deleteDocument } from "../utils/indexe
 import { Service } from "typedi";
 import sharp from 'sharp';
 import fs from 'node:fs';
+import * as uuid from 'uuid';
 
 @Service()
 export class AnimeService {
@@ -122,6 +123,31 @@ export class AnimeService {
 
         const newAnime = em.create(Anime, options);
 
+        // Save Cover and Banner image if defined
+        if(coverBase64) {
+            newAnime.cover = uuid.v4();
+
+            fs.writeFile(
+                `static/anime_covers/cover_${newAnime.cover}.png`, 
+                Buffer.from(coverBase64, 'base64'),
+                function(_) {
+                    return;
+                }
+            );
+        }
+        
+        if(bannerBase64) {
+            newAnime.banner = uuid.v4();
+
+            fs.writeFile(
+                `static/anime_banners/banner_${newAnime.banner}.png`, 
+                Buffer.from(bannerBase64, 'base64'), 
+                function(_) {
+                    return;
+                }
+            );
+        }
+
         const indexId = await indexDocument(
             AvailableIndexes.ANIME,
             newAnime, 
@@ -130,28 +156,6 @@ export class AnimeService {
         newAnime.index = indexId;
         
         await em.persistAndFlush(newAnime);
-
-
-        // Save Cover and Banner image if defined
-        if(coverBase64) {
-            fs.writeFile(
-                `static/anime_covers/cover_${newAnime._id}.png`, 
-                Buffer.from(coverBase64, 'base64'),
-                function(_) {
-                    return;
-                }
-            );
-        }
-
-        if(bannerBase64) {
-            fs.writeFile(
-                `static/anime_banners/banner_${newAnime._id}.png`, 
-                Buffer.from(bannerBase64, 'base64'), 
-                function(_) {
-                    return;
-                }
-            );
-        }
     
         return newAnime;
     }

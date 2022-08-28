@@ -18,7 +18,6 @@ export function Ratelimiter(options: IOptions): MiddlewareFn {
 
       const count: string | null = await redis.get(`${op}_${name}_${ip}`);
       if(count) {
-        console.log(count);
         if((parseInt(count)) > options.time) {
             throw new Error("You are being ratelimited!");
         }
