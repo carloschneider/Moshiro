@@ -31,6 +31,7 @@ export class UserResolver {
     ){}
 
     @Authorized(["USER"])
+    @UseMiddleware(Ratelimiter({ time: 10 }))
     @Mutation(() => ToggleResponse)
     async toggleAnimeStatus(
         @Ctx() { req, res, em, redis, elastic }: GqlContext,
@@ -48,7 +49,7 @@ export class UserResolver {
     }
 
     @Mutation(() => AuthResponse)
-    @UseMiddleware(Ratelimiter({ time: 5 }))
+    @UseMiddleware(Ratelimiter({ time: 2 }))
     async register(
         @Ctx() { em, res, req, redis, elastic }: GqlContext,
         @Arg('options') options: RegisterInput
@@ -57,6 +58,7 @@ export class UserResolver {
     }
 
     @Mutation(() => AuthResponse)
+    @UseMiddleware(Ratelimiter({ time: 5 }))
     async login(
         @Ctx() { em, res, req, redis, elastic }: GqlContext,
         @Arg('options') options: LoginInput
