@@ -85,7 +85,7 @@ export class AnimeService {
 
         // Resize and compress images if defined
         if(options.cover) {
-            sharp(Buffer.from(options.cover, 'base64'))
+            await sharp(Buffer.from(options.cover, 'base64'))
                 .resize(460, 637)
                 .png({
                     quality: 40,
@@ -101,7 +101,7 @@ export class AnimeService {
         }
 
         if(options.banner) {
-            sharp(Buffer.from(options.banner || "", 'base64'))
+            await sharp(Buffer.from(options.banner || "", 'base64'))
                 .resize(1760, 371)
                 .png({
                     quality: 40,
@@ -110,7 +110,6 @@ export class AnimeService {
                 .toBuffer()
                 .then((buf: Buffer) => {
                     bannerBase64 = buf.toString('base64');
-                    console.log(bannerBase64);
                 })
                 .catch(_ => {
                     throw new Error("Failed to process banner image");
@@ -132,18 +131,20 @@ export class AnimeService {
         // Save Cover and Banner image if defined
         if(coverBase64) {
             fs.writeFile(
-                `${__dirname}/cover_${newAnime._id}.png`, Buffer.from(coverBase64, 'base64'),
-                function(err) {
-                    console.log(err);
+                `static/anime_covers/cover_${newAnime._id}.png`, 
+                Buffer.from(coverBase64, 'base64'),
+                function(_) {
+                    return;
                 }
             );
         }
 
         if(bannerBase64) {
             fs.writeFile(
-                `banner_${newAnime._id}.png`, Buffer.from(bannerBase64, 'base64'), 
-                function(err) {
-                    console.log(err)
+                `static/anime_banners/banner_${newAnime._id}.png`, 
+                Buffer.from(bannerBase64, 'base64'), 
+                function(_) {
+                    return;
                 }
             );
         }
