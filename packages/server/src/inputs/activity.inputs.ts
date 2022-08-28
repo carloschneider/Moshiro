@@ -1,4 +1,5 @@
 import { Field, InputType, ObjectType } from "type-graphql";
+import { IsObjectId } from "../decorators/isObjectid";
 import { Activity } from "../entities/activity.entity";
 import { ErrorType } from "./anime.inputs";
 
@@ -8,6 +9,9 @@ export class FetchActivityInput {
         nullable: false,
         description: "Unique identificator of the activity",
     })
+    @IsObjectId({
+        message: "Please specify valid id!"
+    })
     _id!: String;
 }
 
@@ -16,6 +20,9 @@ export class FetchActivitiesInput {
     @Field(() => String, {
         nullable: false,
         description: "Unique identificator of the user to fetch activities from"
+    })
+    @IsObjectId({
+        message: "Please specify valid id!"
     })
     byUserId!: String;
 }

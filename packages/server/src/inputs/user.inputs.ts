@@ -1,5 +1,6 @@
-import { IsEmail, Length, MaxLength, MinLength } from 'class-validator';
+import { IsEmail, Length, Max, MaxLength, Min, MinLength } from 'class-validator';
 import { Field, InputType, ObjectType, registerEnumType } from 'type-graphql';
+import { IsObjectId } from '../decorators/isObjectid';
 import { User } from '../entities/user.entity';
 
 @InputType()
@@ -47,6 +48,9 @@ registerEnumType(InputActivityType, {
 @InputType()
 export class ToggleInput {
     @Field(() => String)
+    @IsObjectId({
+        message: "This anime id is not valid!"
+    })
     animeId!: string;
 
     @Field(() => InputActivityType)
@@ -64,11 +68,14 @@ export class ListInput {
     @Field(() => Number, {
         nullable: true
     })
+    @Min(1)
     page?: number;
 
     @Field(() => Number, {
         nullable: true
     })
+    @Min(1)
+    @Max(25)
     perPage?: number;
 }
 

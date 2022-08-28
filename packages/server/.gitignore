@@ -3,3 +3,4 @@ yarn.lock
 .env
 build
 package-lock.json
+static/*/**

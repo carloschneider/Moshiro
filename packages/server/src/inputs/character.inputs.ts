@@ -2,6 +2,8 @@ import { Field, InputType,  registerEnumType } from "type-graphql";
 import { DateResolver, ObjectIDResolver } from "graphql-scalars";
 import { IsBase64, IsDate, IsUrl, Length, Max, MaxLength, Min } from "class-validator";
 import { IsImageFormat } from "../decorators/isImageFormat";
+import { IsObjectId } from "../decorators/isObjectid";
+import { IsObjectIdArr } from "../decorators/isObjectIdArr";
 
 @InputType() 
 export class DeleteCharacterInput {
@@ -9,6 +11,9 @@ export class DeleteCharacterInput {
         nullable: false,
         description: "Unique identificator of the anime you want to delete"
     }) 
+    @IsObjectId({
+        message: "This anime id is not valid!"
+    })
     _id!: string;
 }
 
@@ -19,6 +24,9 @@ export class CreateCharacterInput {
     })
     @MaxLength(10, {
         each: true
+    })
+    @IsObjectIdArr({
+        message: "Please specify valid object ids in boundTo!"
     })
     boundTo: string[] = [];
 
@@ -33,7 +41,9 @@ export class CreateCharacterInput {
         nullable: true,
         description: "Birth day of the character"
     })
-    @IsDate()
+    @IsDate({
+        message: "Please specify valid birthday date!"
+    })
     birthday?: Date;
 
     @Field(() => String, {
@@ -48,7 +58,9 @@ export class CreateCharacterInput {
         description: "A base64 encoded string with character's image data"
     })
     @IsBase64()
-    @IsImageFormat(['jpg', 'png'])
+    @IsImageFormat(['jpg', 'png'], {
+        message: "This image is not in valid format!"
+    })
     imageUrl?: string;
 };
 
@@ -69,6 +81,7 @@ export class CharactersFetchInput {
     @Field(() => String, {
         nullable: true
     })
+    @IsObjectId()
     _id?: string;
 }
 

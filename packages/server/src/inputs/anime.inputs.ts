@@ -11,6 +11,7 @@ import {
     MaxLength, Min, MinLength,
     IsBase64,
 } from "class-validator";
+import { IsObjectIdArr } from "../decorators/isObjectIdArr";
 
 @ObjectType()
 export class ErrorType {
@@ -117,7 +118,9 @@ export class CreateAnimeInput {
         nullable: true,
         description: "Release date of the anime"
     })
-    @IsValidUnixTime()
+    @IsValidUnixTime({
+        message: "Please enter valid time!"
+    })
     releasedOn?: number;
 
     @Field({
@@ -160,6 +163,9 @@ export class CreateAnimeInput {
     )
     @MaxLength(10, {
         each: true
+    })
+    @IsObjectIdArr({
+        message: "One of the studios is not valid!"
     })
     studios!: string[]
 }

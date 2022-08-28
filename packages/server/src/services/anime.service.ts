@@ -8,6 +8,8 @@ import { AnimeCharacterListInput } from "../inputs/character.inputs";
 import { CharacterSort } from "../inputs/character.inputs";
 import { indexDocument, AvailableIndexes, deleteDocument } from "../utils/indexer";
 import { Service } from "typedi";
+import sharp from 'sharp';
+import fs from 'node:fs';
 
 @Service()
 export class AnimeService {
@@ -78,6 +80,43 @@ export class AnimeService {
     async createAnime(
         { em, options, elastic }: GqlContext & { options: CreateAnimeInput }
     ): Promise<Anime> {
+        let coverBase64: String | null = null;
+        let bannerBase64: String | null = null;
+
+        // Resize and compress images if defined
+        if(options.cover) {
+            sharp(Buffer.from(options.cover, 'base64'))
+                .resize(460, 637)
+                .png({
+                    quality: 40,
+                    compressionLevel: 7
+                })
+                .toBuffer()
+                .then((buf: Buffer) => {
+                    coverBase64 = buf.toString('base64');
+                })
+                .catch(_ => {
+                    throw new Error("Failed to process cover image!");
+                });
+        }
+
+        if(options.banner) {
+            sharp(Buffer.from(options.banner || "", 'base64'))
+                .resize(1760, 371)
+                .png({
+                    quality: 40,
+                    compressionLevel: 7
+                })
+                .toBuffer()
+                .then((buf: Buffer) => {
+                    bannerBase64 = buf.toString('base64');
+                    console.log(bannerBase64);
+                })
+                .catch(_ => {
+                    throw new Error("Failed to process banner image");
+                })
+        }
+
         const newAnime = em.create(Anime, options);
 
         const indexId = await indexDocument(
@@ -88,6 +127,26 @@ export class AnimeService {
         newAnime.index = indexId;
         
         await em.persistAndFlush(newAnime);
+
+
+        // Save Cover and Banner image if defined
+        if(coverBase64) {
+            fs.writeFile(
+                `${__dirname}/cover_${newAnime._id}.png`, Buffer.from(coverBase64, 'base64'),
+                function(err) {
+                    console.log(err);
+                }
+            );
+        }
+
+        if(bannerBase64) {
+            fs.writeFile(
+                `banner_${newAnime._id}.png`, Buffer.from(bannerBase64, 'base64'), 
+                function(err) {
+                    console.log(err)
+                }
+            );
+        }
     
         return newAnime;
     }
