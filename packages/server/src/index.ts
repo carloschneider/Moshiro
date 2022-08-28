@@ -15,8 +15,9 @@ import { config } from 'dotenv';
 import * as redisMod from 'redis';
 import express, { application } from 'express';
 import { AvailableIndexes } from './utils/indexer';
-import searchRouter from './routes/search';
 import { Client } from '@elastic/elasticsearch';
+import searchRouter from './routes/search';
+import staticRouter from './routes/static';
 import { Container } from 'typedi';
 import {
     typeDefs as scalarTypeDefs,
@@ -148,6 +149,7 @@ const main = async () => {
     });
 
     app.use('/search', searchRouter);
+    app.use('/static', staticRouter);
 
     const port = process.env.PORT || 3000;
     app.listen(port, () => {
