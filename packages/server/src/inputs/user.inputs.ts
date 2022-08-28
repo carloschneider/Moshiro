@@ -1,10 +1,20 @@
-import { IsEmail, Length, Max, MaxLength, Min, MinLength } from 'class-validator';
+import { IsBase64, IsEmail, Length, Max, MaxLength, Min, MinLength } from 'class-validator';
 import { Field, InputType, ObjectType, registerEnumType } from 'type-graphql';
+import { IsImageFormat } from '../decorators/isImageFormat';
 import { IsObjectId } from '../decorators/isObjectid';
 import { User } from '../entities/user.entity';
 
 @InputType()
 export class RegisterInput {
+    @Field(() => String)
+    @IsBase64({
+        message: "This image format is not supported!"
+    })
+    @IsImageFormat(['jpg', 'png', 'gif'], {
+        message: "This image format is not supported"
+    })
+    avatar?: string;
+
     @Field(() => String)
     @Length(3, 64)
     username!: string;
