@@ -38,6 +38,8 @@ function getCookie(name: string, cookies: string | undefined): string | undefine
 }
 
 export let elastic: Client;
+export let redis: redisMod.RedisClientType;
+
 const main = async () => {
     config();
 
@@ -105,7 +107,7 @@ const main = async () => {
     app.use(express.json({ limit: '10mb' }))
     app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
-    const redis = redisMod.createClient();
+    redis = redisMod.createClient();
 
     redis.on('error', err => {
         return process.stderr.write(err);

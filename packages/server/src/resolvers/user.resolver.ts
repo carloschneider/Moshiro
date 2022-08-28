@@ -4,7 +4,8 @@ import {
     Ctx, 
     Mutation, 
     Query, 
-    Resolver 
+    Resolver, 
+    UseMiddleware
 } from 'type-graphql';
 import { 
     GqlContext 
@@ -20,6 +21,7 @@ import {
 import { Service } from 'typedi';
 import { User } from '../entities/user.entity';
 import { UserService } from '../services/user.service';
+import { Ratelimiter } from '../middleware/ratelimit';
 
 @Service()
 @Resolver(() => User)
@@ -46,6 +48,7 @@ export class UserResolver {
     }
 
     @Mutation(() => AuthResponse)
+    @UseMiddleware(Ratelimiter({ time: 5 }))
     async register(
         @Ctx() { em, res, req, redis, elastic }: GqlContext,
         @Arg('options') options: RegisterInput
