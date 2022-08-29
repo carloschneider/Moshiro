@@ -8,19 +8,60 @@ import {
     DeleteCharacterInput 
 } from "../inputs/character.inputs";
 import { ObjectId } from "@mikro-orm/mongodb";
+import * as uuid from 'uuid';
+import sharp from 'sharp';
+import fs from 'node:fs';
 
 @Service()
 export class CharacterService {
     async createCharacter(
-        { em, options, elastic }: GqlContext & { options: CreateCharacterInput | any }
+        { em, options, elastic }: GqlContext & { options: CreateCharacterInput }
     ): Promise<Character> {
+        let characterImageBase64: string | null = null;
+
         const newCharacter = em.create(Character, options);
+
+        // Process character's image
+        if(options.image) {
+            await sharp(Buffer.from(options.image || "", 'base64'), {
+                animated: false
+            })
+                .resize(460, 637, {
+                    fit: 'cover'
+                })
+                .png({
+                    quality: 30,
+                    compressionLevel: 9
+                })
+                .toBuffer()
+                .then((res: Buffer) => {
+                    characterImageBase64 = res.toString('base64');
+                })
+                .catch(_ => {
+                    throw new Error("Can't process character's image")
+                })
+        }
+
+        // Save image and assign it's UUID to newCharacter object
+        if(characterImageBase64) {
+            newCharacter.image = uuid.v4();
+            console.log(newCharacter.image);
+
+            fs.writeFile(
+                `static/character_image/${newCharacter.image}.png`, 
+                Buffer.from(characterImageBase64, 'base64'), 
+                function(_) {
+                    return;
+                }
+            );
+        }
 
         const indexId = await indexDocument(
             AvailableIndexes.CHARACTER,
             newCharacter,
             elastic
         );
+
         newCharacter.index = indexId;
     
         await em.persistAndFlush(newCharacter);

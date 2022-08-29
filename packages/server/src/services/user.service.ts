@@ -54,7 +54,6 @@ export class UserService {
                 .catch(_ => {
                     throw new Error("Cannot process your avatar image");
                 });
-                
         }
     
         const existingUser = await em.findOne(User, {
@@ -106,7 +105,7 @@ export class UserService {
             options.avatar = uuid.v4();
             
             fs.writeFile(
-                `static/avatar/avatar_${options.avatar}.png`, 
+                `static/avatar/${options.avatar}.png`, 
                 Buffer.from(avatarBase64, 'base64'),
                 function(_) {
                     return;

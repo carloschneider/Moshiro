@@ -149,9 +149,6 @@ export class CreateAnimeInput {
             description: "Array of tags, for example (Romance, Action, Mystery)"
         }
     )
-    @MaxLength(10, {
-        each: true
-    })
     tags?: string[]
 
     @Field(
@@ -161,9 +158,6 @@ export class CreateAnimeInput {
             description: "Array of studio ids"
         }
     )
-    @MaxLength(10, {
-        each: true
-    })
     @IsObjectIdArr({
         message: "One of the studios is not valid!"
     })

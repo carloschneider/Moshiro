@@ -29,6 +29,15 @@ export class Character {
     })
     boundTo: string[] = [];
 
+    @Field(() => String, {
+        nullable: true,
+        description: "Unique identificator pointing to the character's image file name in file system",
+    })
+    @Property({
+        nullable: true,
+    })
+    image?: string;
+
 
     @Field(() => String, {
         nullable: false,

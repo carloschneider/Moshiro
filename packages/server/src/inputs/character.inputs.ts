@@ -22,13 +22,20 @@ export class CreateCharacterInput {
     @Field(() => [ObjectIDResolver], {
         description: "Anime shows that this character showed in"
     })
-    @MaxLength(10, {
-        each: true
-    })
     @IsObjectIdArr({
         message: "Please specify valid object ids in boundTo!"
     })
     boundTo: string[] = [];
+
+    @Field(() => String, {
+        description: "A base64 encoded image of character image",
+        nullable: true
+    })
+    @IsBase64({
+        message: "Character image should be in base64 format!"
+    })
+    @IsImageFormat(['jpg', 'png'])
+    image?: string;
 
     @Field(() => String, {
         nullable: false,
@@ -52,16 +59,6 @@ export class CreateCharacterInput {
     })
     @Length(10, 4096)
     description?: string;
-
-    @Field(() => String, {
-        nullable: true,
-        description: "A base64 encoded string with character's image data"
-    })
-    @IsBase64()
-    @IsImageFormat(['jpg', 'png'], {
-        message: "This image is not in valid format!"
-    })
-    imageUrl?: string;
 };
 
 export enum CharacterSort {

@@ -128,7 +128,7 @@ export class AnimeService {
             newAnime.cover = uuid.v4();
 
             fs.writeFile(
-                `static/anime_covers/cover_${newAnime.cover}.png`, 
+                `static/anime_covers/${newAnime.cover}.png`, 
                 Buffer.from(coverBase64, 'base64'),
                 function(_) {
                     return;
@@ -140,7 +140,7 @@ export class AnimeService {
             newAnime.banner = uuid.v4();
 
             fs.writeFile(
-                `static/anime_banners/banner_${newAnime.banner}.png`, 
+                `static/anime_banners/${newAnime.banner}.png`, 
                 Buffer.from(bannerBase64, 'base64'), 
                 function(_) {
                     return;
