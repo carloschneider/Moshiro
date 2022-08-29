@@ -87,7 +87,7 @@ export class AnimeService {
         // Resize and compress images if defined
         if(options.cover) {
             await sharp(Buffer.from(options.cover, 'base64'))
-                .resize(460, 637, {
+                .resize(360, 537, {
                     fit: 'cover'
                 })
                 .png({
@@ -105,7 +105,7 @@ export class AnimeService {
 
         if(options.banner) {
             await sharp(Buffer.from(options.banner || "", 'base64'))
-                .resize(1760, 371, {
+                .resize(1060, 371, {
                     fit: 'cover'
                 })
                 .png({

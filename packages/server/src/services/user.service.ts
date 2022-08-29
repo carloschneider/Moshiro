@@ -40,7 +40,7 @@ export class UserService {
             await sharp(Buffer.from(options.avatar || "", 'base64'), {
                 animated: true
             })
-                .resize(300, 300, {
+                .resize(170, 170, {
                     fit: 'cover'
                 })
                 .png({

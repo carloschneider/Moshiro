@@ -26,7 +26,7 @@ export class CharacterService {
             await sharp(Buffer.from(options.image || "", 'base64'), {
                 animated: false
             })
-                .resize(460, 637, {
+                .resize(360, 537, {
                     fit: 'cover'
                 })
                 .png({
