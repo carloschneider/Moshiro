@@ -4,6 +4,7 @@ import { CharacterResolver } from './resolvers/character.resolver';
 import { ActivityResolver } from './resolvers/activity.resolver';
 import { AnimeResolver } from './resolvers/anime.resolver';
 import { UserResolver } from './resolvers/user.resolver';
+import { PostResolver } from './resolvers/post.resolver';
 import { ApolloServer } from 'apollo-server-express';
 import { userJwt, __prod__ } from './constants';
 import authChecker from './utils/authChecker';
@@ -132,6 +133,7 @@ const main = async () => {
                 UserResolver,
                 CharacterResolver,
                 ActivityResolver,
+                PostResolver
             ],
             container: Container,
             authChecker: authChecker,
