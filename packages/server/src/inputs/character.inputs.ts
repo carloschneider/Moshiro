@@ -4,6 +4,7 @@ import { IsBase64, IsDate, IsUrl, Length, Max, MaxLength, Min } from "class-vali
 import { IsImageFormat } from "../decorators/isImageFormat";
 import { IsObjectId } from "../decorators/isObjectid";
 import { IsObjectIdArr } from "../decorators/isObjectIdArr";
+import { Character } from "../entities/character.entity";
 
 @InputType() 
 export class DeleteCharacterInput {
@@ -18,7 +19,7 @@ export class DeleteCharacterInput {
 }
 
 @InputType()
-export class CreateCharacterInput {
+export class CreateCharacterInput implements Partial<Character> {
     @Field(() => [ObjectIDResolver], {
         description: "Anime shows that this character showed in"
     })

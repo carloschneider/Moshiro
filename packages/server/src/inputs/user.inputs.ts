@@ -5,7 +5,7 @@ import { IsObjectId } from '../decorators/isObjectid';
 import { User } from '../entities/user.entity';
 
 @InputType()
-export class RegisterInput {
+export class RegisterInput implements Partial<User> {
     @Field(() => String)
     @IsBase64({
         message: "This image format is not supported!"
@@ -31,7 +31,7 @@ export class RegisterInput {
 }
 
 @InputType()
-export class LoginInput {
+export class LoginInput implements Partial<User> {
     @Field(() => String)
     @IsEmail()
     @Length(1, 1024)

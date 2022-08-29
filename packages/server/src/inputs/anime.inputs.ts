@@ -62,7 +62,7 @@ export class DeleteAnimeResponse {
 }
 
 @InputType()
-export class CreateAnimeInput {
+export class CreateAnimeInput implements Partial<Anime> {
     @Field({
         nullable: true,
         description: "A base64 encoded string with cover image data"

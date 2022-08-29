@@ -104,13 +104,13 @@ export class Anime {
         description: "Tags of the anime"
     })
     @Property()
-    tags?: [string];
+    tags?: string[];
 
     @Field(() => [ObjectIDResolver], {
         description: "Studios that took part of creating the anime"
     })
     @Property()
-    studios!: [string];
+    studios!: string[];
 
     @Field(() => Int, {
         description: "Short description"
