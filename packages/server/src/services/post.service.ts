@@ -2,7 +2,7 @@ import { ObjectId } from "@mikro-orm/mongodb";
 import { Service } from "typedi";
 import { GqlContext } from "../constants";
 import { Post } from "../entities/post.entity";
-import { PostCreateInput, PostDeleteInput, PostModifyInput } from "../inputs/post.input";
+import { PostCreateInput, PostDeleteInput, PostFetchInput, PostModifyInput, FetchType } from "../inputs/post.input";
 
 @Service()
 export class PostService {
@@ -76,7 +76,28 @@ export class PostService {
         return found;
     }
 
-    async fetch() {
-        
+    async fetch(
+        { em, options }: GqlContext & { options: PostFetchInput }
+    ): Promise<Post[]> {
+        /*
+            TODO: Show private posts of users that have request author in friends
+        */
+        const query: any = {
+            ...options['type'] == FetchType.FOLLOWING && {
+                author: new ObjectId(options.byUser)
+            },
+            ...options['type'] == FetchType.GLOBAL && {
+                private: false
+            }
+        };
+
+        return await em.find(
+            Post, 
+            query,
+            {
+                offset: options.page * options.perPage,
+                limit: options.perPage
+            }
+        );
     }
 }

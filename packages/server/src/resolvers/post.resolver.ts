@@ -1,5 +1,5 @@
 import { Authorized, Mutation, Query, Resolver, Ctx, Arg } from "type-graphql";
-import { PostCreateInput, PostDeleteInput } from "../inputs/post.input";
+import { PostCreateInput, PostDeleteInput, PostFetchInput, PostModifyInput } from "../inputs/post.input";
 import { Post } from "../entities/post.entity";
 import { GqlContext } from "../constants";
 import { Service } from "typedi";
@@ -31,12 +31,18 @@ export class PostResolver {
 
     @Mutation(() => Post)
     @Authorized(['USER'])
-    async modify() {
-
+    async modify(
+        @Ctx() { req, res, em, redis, elastic }: GqlContext,
+        @Arg('options') options: PostModifyInput
+    ) {
+        return this.service.modify({ req, res, em, redis, elastic, options });
     }
 
-    @Query(() => Post)
-    async fetchPost() {
-
+    @Query(() => [Post])
+    async fetchPost(
+        @Ctx() { req, res, em, redis, elastic }: GqlContext,
+        @Arg('options') options: PostFetchInput
+    ) {
+        return this.service.fetch({ req, res, em, redis, elastic, options });
     }
 }

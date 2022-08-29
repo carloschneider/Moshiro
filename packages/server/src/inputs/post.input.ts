@@ -1,7 +1,7 @@
 import { ObjectId } from "@mikro-orm/mongodb";
 import { IsBoolean, Max, MaxLength, Min, MinLength } from "class-validator";
 import { ObjectIDResolver } from "graphql-scalars";
-import { Field, InputType } from "type-graphql";
+import { Field, InputType, registerEnumType } from "type-graphql";
 import { IsObjectId } from "../decorators/isObjectid";
 import { Post } from "../entities/post.entity";
 
@@ -15,6 +15,50 @@ export class PostDeleteInput implements Partial<Post> {
         message: "Please provide a valid ObjectId"
     })
     _id!: ObjectId;
+}
+
+export enum FetchType {
+    GLOBAL = 1,
+    FOLLOWING = 2,
+    FEED = 3
+}
+
+registerEnumType(FetchType, {
+    name: "FetchType", 
+    description: "Type of the post feed fetched"
+});
+
+@InputType()
+export class PostFetchInput {
+    @Field(() => FetchType, {
+        nullable: true,
+        defaultValue: FetchType.GLOBAL,
+        description: "Type of the feed you want to fetch"
+    })
+    type!: FetchType;
+
+    @Field(() => ObjectIDResolver, {
+        nullable: true,
+        description: "Author of the post from whom you want to fetch"
+    })
+    byUser?: ObjectId;
+
+    @Field(() => Number, {
+        nullable: true,
+        defaultValue: 1,
+        description: "Number of page to fetch"
+    })
+    @Min(1)
+    page!: number;
+
+    @Field(() => Number, {
+        nullable: true,
+        defaultValue: 10,
+        description: "How many results to return"
+    })
+    @Min(1)
+    @Max(25)
+    perPage!: number;
 }
 
 @InputType()
