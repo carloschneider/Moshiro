@@ -1,7 +1,8 @@
 import { FetchAnimeInput, CreateAnimeInput, DeleteAnimeResponse, FetchAnimeResponse } from "../inputs/anime.inputs";
 import { AnimeService } from "../services/anime.service";
-import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Authorized, Ctx, Mutation, Query, Resolver, UseMiddleware } from "type-graphql";
 import { Anime } from "../entities/anime.entity";
+import { Ratelimiter } from "../middleware/ratelimit";
 import { GqlContext } from "../constants";
 import { Service } from "typedi";
 
@@ -13,6 +14,7 @@ export class AnimeResolver {
     ){};
 
     @Query(() => FetchAnimeResponse)
+    @UseMiddleware(Ratelimiter({ time: 50 }))
     async anime(
         @Ctx() { em, res, req, redis, elastic }: GqlContext,
         @Arg('options') options: FetchAnimeInput

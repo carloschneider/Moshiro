@@ -41,14 +41,15 @@ export class PostFetchInput {
         nullable: true,
         description: "Author of the post from whom you want to fetch"
     })
+    @IsObjectId()
     byUser?: ObjectId;
 
     @Field(() => Number, {
         nullable: true,
-        defaultValue: 1,
+        defaultValue: 0,
         description: "Number of page to fetch"
     })
-    @Min(1)
+    @Min(0)
     page!: number;
 
     @Field(() => Number, {
@@ -90,13 +91,6 @@ export class PostModifyInput implements Partial<Post> {
 
 @InputType()
 export class PostCreateInput implements Partial<Post> {
-    @Field(() => ObjectIDResolver, {
-        nullable: false,
-        description: "Author of the original post"
-    })
-    @IsObjectId({
-        message: "Please provide a valid ObjectId"
-    })
     author!: ObjectId;
 
     @Field(() => String, {

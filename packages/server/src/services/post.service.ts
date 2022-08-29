@@ -7,7 +7,7 @@ import { PostCreateInput, PostDeleteInput, PostFetchInput, PostModifyInput, Fetc
 @Service()
 export class PostService {
     async create(
-        { em, options }: GqlContext & { options: PostCreateInput } 
+        { em, options, req }: GqlContext & { options: PostCreateInput } 
     ): Promise<Post> {
         // Check if post that is user replying to exist
         if(options.isReplyTo) {
@@ -20,6 +20,7 @@ export class PostService {
             // TODO: Check if post is private and user is following him
         };
 
+        options.author = req.user._id;
         let newPost: Post = em.create(Post, options);
 
         await em.persistAndFlush(newPost);
@@ -81,13 +82,14 @@ export class PostService {
     ): Promise<Post[]> {
         /*
             TODO: Show private posts of users that have request author in friends
+            Only do after the friends part of this application is done
         */
         const query: any = {
-            ...options['type'] == FetchType.FOLLOWING && {
-                author: new ObjectId(options.byUser)
-            },
             ...options['type'] == FetchType.GLOBAL && {
                 private: false
+            },
+            ...options['type'] == FetchType.FEED && {
+                author: new ObjectId(options.byUser)
             }
         };
 
