@@ -9,7 +9,7 @@
 </div>
 
 ## Basic Overview
-Moshiro is a basic anime platform/database, list or anything you want to call it. 
+Moshiro is a basic anime platform/database, list or anything you want to call it. My final goal that I want to achieve is for this platform to be technologically better than Anilist.
 
 ## Running
 - This part of README will be empty for now, Moshiro is still in development and tech-stack can change.
