@@ -1,10 +1,12 @@
 import { FetchAnimeInput, CreateAnimeInput, DeleteAnimeResponse, FetchAnimeResponse } from "../inputs/anime.inputs";
 import { AnimeService } from "../services/anime.service";
-import { Arg, Authorized, Ctx, Mutation, Query, Resolver, UseMiddleware } from "type-graphql";
+import { Arg, Authorized, Ctx, FieldResolver, Mutation, Query, Resolver, Root, UseMiddleware } from "type-graphql";
 import { Anime } from "../entities/anime.entity";
 import { Ratelimiter } from "../middleware/ratelimit";
 import { GqlContext } from "../constants";
 import { Service } from "typedi";
+import { Character } from "../entities/character.entity";
+import { ObjectId } from "@mikro-orm/mongodb";
 
 @Service()
 @Resolver(() => Anime)
@@ -38,5 +40,16 @@ export class AnimeResolver {
         @Arg("id", () => String) id: string
     ): Promise<DeleteAnimeResponse> {
         return this.service.deleteAnime({ em, id, req, res, redis, elastic });
+    }
+
+    // TODO: Add options to sort and more
+    @FieldResolver()
+    async characters(
+        @Root() item: Anime,
+        @Ctx() { em }: GqlContext
+    ) {
+        return await em.find(Character, {
+            boundTo: item._id.toString()
+        });
     }
 }

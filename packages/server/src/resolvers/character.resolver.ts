@@ -4,7 +4,8 @@ import {
     Ctx, 
     Mutation, 
     Query, 
-    Resolver 
+    Resolver, 
+    ResolverInterface
 } from "type-graphql";
 import { GqlContext } from "../constants";
 import { Character } from "../entities/character.entity";

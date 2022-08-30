@@ -1,12 +1,8 @@
 import { Entity, PrimaryKey, Property } from "@mikro-orm/core";
-import { Arg, Ctx, emitSchemaDefinitionFile, Field, Int, ObjectType } from "type-graphql";
-import { DateTimeResolver, ObjectIDResolver, URLResolver } from "graphql-scalars";
+import { Field, Int, ObjectType } from "type-graphql";
+import { DateTimeResolver, ObjectIDResolver } from "graphql-scalars";
 import { ObjectId } from "@mikro-orm/mongodb";
 import { Character } from "./character.entity";
-import { GqlContext } from "../constants";
-import { ListInput } from "../inputs/user.inputs";
-import { fetchAnimeCharacters } from "../services/anime.service";
-import { AnimeCharacterListInput } from "../inputs/character.inputs";
 
 @ObjectType()
 @Entity()
@@ -118,14 +114,6 @@ export class Anime {
     @Property()
     episodes!: number;
 
-    @Field(() => [Character] || null, {
-        description: "Array of all characters that are presnent in the show",
-        nullable: true
-    })
-    async characterList (
-        @Ctx() { em, req, res, redis, elastic }: GqlContext,
-        @Arg('options', { nullable: true }) options: AnimeCharacterListInput
-    ): Promise<[Character]> {
-        return fetchAnimeCharacters({ em, aId: this._id, options, req, res, redis, elastic });
-    }
+    @Field(() => [Character])
+    characters?: Character[];
 }

@@ -64,7 +64,7 @@ export class Activity {
     @Field(() => Anime, {
         nullable: true
     })
-    anime?: Anime;
+    anime?: ObjectId;
 
     @Property({
         nullable: true

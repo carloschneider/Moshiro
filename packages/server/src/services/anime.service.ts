@@ -38,7 +38,13 @@ export class AnimeService {
             ]
         };
     
-        await redis.setEx(`anime:${found._id?.toString()}`, 1000, JSON.stringify(found));
+        await redis.setEx(
+            `anime:${found._id?.toString()}`, 
+            1000, 
+            JSON.stringify(found)
+            // TODO: Probably little unsafe, replace when possible
+                .replace("id", "_id")
+        );
     
         return {
             anime: found
