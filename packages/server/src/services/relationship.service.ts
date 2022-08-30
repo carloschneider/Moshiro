@@ -3,7 +3,7 @@ import { Service } from "typedi";
 import { GqlContext } from "../constants";
 import { Relationship, RelationshipType } from "../entities/relationship.entity";
 import { User } from "../entities/user.entity";
-import { createRelationInput } from "../inputs/relationship.inputs";
+import { createRelationInput, deleteRelationInput } from "../inputs/relationship.inputs";
 
 @Service()
 export class RelationshipService {
@@ -26,7 +26,7 @@ export class RelationshipService {
                 {
                     recipient: req.user._id,
                     sender: options._id
-                }, 
+                },
                 {
                     recipient: options._id,
                     sender: req.user._id
@@ -88,5 +88,35 @@ export class RelationshipService {
             
             return newRelation;
         }
-    }
+    };
+
+    async fetchRelation(
+        { }: GqlContext & { options: deleteRelationInput }
+    ): Promise<Relationship> {
+        return new Relationship();
+    };
+
+    async removeRelation(
+        { em, req, options }: GqlContext & { options: deleteRelationInput }
+    ): Promise<Relationship> {
+        const found: Relationship | null = await em.findOne(Relationship, {
+            _id: options._id
+        });
+
+        if(
+            !found 
+            || (found.type == RelationshipType.BLOCKED && found.sender != req.user._id)
+            || (found.recipient != req.user._id && found.sender != req.user._id)
+        ) {
+            throw new Error("You can't delete this reltationship");
+        };
+
+        const success: number = await em.nativeDelete(Relationship, {
+            _id: options._id
+        });
+        
+        if(!success) throw new Error("Failed to delete the realation");
+
+        return found;
+    };
 }
