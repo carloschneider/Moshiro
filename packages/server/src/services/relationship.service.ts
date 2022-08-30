@@ -49,24 +49,44 @@ export class RelationshipService {
             return false;
         });
 
-        let newRelation: Relationship;
         if(existingFriendRelation) {
             /*
                 User sending this request has already received friend request from the other side
                 instead of creating new request, delete the existing one and create friends record
                 for each side
+
+                Sender will be recipient of this request, because we are the one accepting the request
+                by other user with this request
+
+                Also delete the request by the other user
             */
+           let newRelation = em.create(
+                Relationship,
+                {
+                    sender: options._id,
+                    recipient: req.user._id,
+                    type: RelationshipType.FRIENDS
+                }
+           );
+           await em.persistAndFlush(newRelation);
+
+           await em.nativeDelete(Relationship, {
+                sender: options._id,
+                type: RelationshipType.FRIENDS__REQUEST
+           });
+
+           return newRelation;
         } else {
             //  Create a new friend request because the recipient did not send request to sender
-            await em.persistAndFlush(
-                em.create(Relationship, {
-                    sender: req.user._id,
-                    recipient: options._id,
-                    type: RelationshipType.FRIENDS__REQUEST
-                })
-            )
-        }
+            let newRelation = em.create(Relationship, {
+                sender: req.user._id,
+                recipient: options._id,
+                type: RelationshipType.FRIENDS__REQUEST
+            });
 
-        return newRelation;
+            await em.persistAndFlush(newRelation);
+            
+            return newRelation;
+        }
     }
 }
