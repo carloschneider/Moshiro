@@ -13,7 +13,6 @@ import { ListInput } from "../inputs/user.inputs";
 import { ObjectId } from "@mikro-orm/mongodb";
 import { GqlContext } from "../constants";
 import { Anime } from "./anime.entity";
-import { getUsersAnimeList } from "../services/anime.service";
 
 @ObjectType()
 @Entity()
@@ -80,24 +79,8 @@ export class User {
     completed: ObjectId[] = []
 
     @Field(() => [Anime], {
-        defaultValue: [],
-        description: "List of anime that is user watching, completed, planning or dropped."
+        nullable: true,
+        description: "List of anime user is watching"
     })
-    async list(
-        @Ctx() { em, req, res, redis, elastic }: GqlContext,
-        @Arg('options', () => ListInput, {
-            nullable: true
-        }) options: ListInput
-    ): Promise<Anime[]> {
-        return getUsersAnimeList({
-            em,
-            req,
-            res,
-            redis,
-            options,
-            elastic,
-            // When user don't provide type, it will be "watching" by default
-            oIdArr: this[options ? (options.type ? options.type : "watching") : "watching"]
-        });
-    }
+    list?: Anime[];
 }

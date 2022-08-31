@@ -2,9 +2,11 @@ import {
     Arg, 
     Authorized, 
     Ctx, 
+    FieldResolver, 
     Mutation, 
     Query, 
     Resolver, 
+    Root, 
     UseMiddleware
 } from 'type-graphql';
 import { 
@@ -16,12 +18,16 @@ import {
     AuthResponse,
     MeResponse,
     ToggleResponse,
-    ToggleInput
+    ToggleInput,
+    FetchUserListInput
 } from '../inputs/user.inputs';
 import { Service } from 'typedi';
-import { User } from '../entities/user.entity';
 import { UserService } from '../services/user.service';
 import { Ratelimiter } from '../middleware/ratelimit';
+import { 
+    Anime,
+    User
+} from '../entities/index';
 
 @Service()
 @Resolver(() => User)
@@ -64,5 +70,21 @@ export class UserResolver {
         @Arg('options') options: LoginInput
     ): Promise<AuthResponse> {
         return this.service.login({ req, em, options, res, redis, elastic });
+    }
+
+    @FieldResolver(() => [Anime])
+    async list(
+        @Root() item: User,
+        @Ctx() { em, res, req, redis, elastic }: GqlContext,
+        @Arg('options') options: FetchUserListInput
+    ): Promise<Anime[] | null> {
+        return this.service.fetchUserList(item, {
+            em,
+            res,
+            req,
+            redis,
+            elastic,
+            options
+        })
     }
 }

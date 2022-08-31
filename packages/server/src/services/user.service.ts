@@ -1,8 +1,6 @@
 import { AvailableIndexes, indexDocument } from '../utils/indexer';
-import { Activity, ActivityType } from '../entities/activity.entity';
 import { ObjectId } from '@mikro-orm/mongodb';
 import { GqlContext } from '../constants';
-import { User } from '../entities/user.entity';
 import { sign } from 'jsonwebtoken';
 import { hash, verify } from 'argon2';
 import { Service } from 'typedi';
@@ -10,6 +8,7 @@ import sharp from 'sharp';
 import fs from 'node:fs';
 import { 
     AuthResponse,
+    FetchUserListInput,
     LoginInput,
     MeResponse,
     RegisterInput,
@@ -17,6 +16,12 @@ import {
     ToggleResponse 
 } from '../inputs/user.inputs';
 import * as uuid from 'uuid';
+import {
+    Anime,
+    User,
+    Activity,
+    ActivityType
+} from '../entities/index'
 
 @Service()
 export class UserService {
@@ -236,5 +241,21 @@ export class UserService {
         return {
             success: true
         };
+    }
+
+    async fetchUserList(
+        user: User,
+        { options, em }: GqlContext & { options: FetchUserListInput }
+    ): Promise<[Anime] | null> {
+        const found = await em.find(Activity, {
+            boundTo: user._id,
+            type: options.type
+        }, {
+            limit: options.perPage,
+            offset: options.page * options.perPage
+        });
+
+        // @ts-ignore
+        return found.length == 0 ? null : found;
     }
 }

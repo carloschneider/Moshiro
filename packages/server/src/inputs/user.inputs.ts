@@ -6,7 +6,9 @@ import { User } from '../entities/user.entity';
 
 @InputType()
 export class RegisterInput implements Partial<User> {
-    @Field(() => String)
+    @Field(() => String, {
+        nullable: true
+    })
     @IsBase64({
         message: "This image format is not supported!"
     })
@@ -65,6 +67,30 @@ export class ToggleInput {
 
     @Field(() => InputActivityType)
     type!: InputActivityType;
+}
+
+@InputType()
+export class FetchUserListInput {
+    @Field(() => InputActivityType, {
+        nullable: true,
+        defaultValue: InputActivityType.COMPLETED
+    })
+    type!: InputActivityType;
+
+    @Field(() => Number, {
+        nullable: true,
+        defaultValue: 1
+    })
+    @Min(1)
+    page!: number;
+
+    @Field(() => Number, {
+        nullable: true,
+        defaultValue: 10
+    })
+    @Min(1)
+    @Max(25)
+    perPage!: number;
 }
 
 @InputType()
