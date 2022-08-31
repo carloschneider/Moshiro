@@ -2,6 +2,7 @@ import { ObjectId } from "@mikro-orm/mongodb";
 import { Service } from "typedi";
 import { GqlContext } from "../constants";
 import { Post } from "../entities/post.entity";
+import { Relationship, RelationshipType } from "../entities/relationship.entity";
 import { PostCreateInput, PostDeleteInput, PostFetchInput, PostModifyInput, FetchType } from "../inputs/post.input";
 
 @Service()
@@ -17,7 +18,26 @@ export class PostService {
 
             if(!replyingTo) throw new Error("Post you are replying to does not exist!");
 
-            // TODO: Check if post is private and user is following him
+            if(replyingTo.private) {
+                /*
+                    Check if recipient of this reply is friend with the author 
+                    of this request (only if the post is private)
+                */
+                const relation = await em.findOne(Relationship, {
+                    $or: [
+                        {
+                            type: RelationshipType.FRIENDS,
+                            recipient: replyingTo.author
+                        }, 
+                        {
+                            type: RelationshipType.FRIENDS,
+                            sender: replyingTo.author
+                        }
+                    ]
+                });
+
+                if(!relation) throw new Error("You can't reply to this post!");
+            }
         };
 
         options.author = req.user._id;
