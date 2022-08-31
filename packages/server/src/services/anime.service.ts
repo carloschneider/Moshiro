@@ -193,6 +193,7 @@ export async function getUsersAnimeList(
     return data;
 }
 
+// TODO: Get rid of these two functions and put them to the service class
 export async function fetchAnimeCharacters(
     { em, aId, options }: GqlContext & { options: AnimeCharacterListInput, aId: ObjectId }
 ): Promise<[Character]> {

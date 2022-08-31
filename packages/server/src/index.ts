@@ -1,6 +1,5 @@
 /*
-    TODO: Add index.ts files and put all files from one folder to it 
-    to make easier file importing
+    TODO: Remove imports and replace them with imports from index.ts files
 */
 
 'use strict';
