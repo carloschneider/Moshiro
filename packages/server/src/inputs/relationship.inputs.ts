@@ -40,7 +40,7 @@ export class fetchRelationInput {
 
     @Field(() => RelationshipType, {
         nullable: false,
-        defaultValue: RelationshipType.FRIENDS__REQUEST,
+        defaultValue: RelationshipType.FRIENDS_SENT_REQUEST,
         description: "Type of relation to fetch"
     })
     type!: RelationshipType;

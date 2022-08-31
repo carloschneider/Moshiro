@@ -6,7 +6,7 @@ import { User } from "../entities/user.entity";
 import { createRelationInput, deleteRelationInput, fetchRelationInput } from "../inputs/relationship.inputs";
 import { RelationshipService } from "../services/relationship.service";
 
-@Resolver()
+@Resolver(() => Relationship)
 @Service()
 export class RelationshipResolver {
     constructor(

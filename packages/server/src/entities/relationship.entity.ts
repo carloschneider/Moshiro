@@ -7,8 +7,7 @@ import { User } from "./user.entity";
 
 export enum RelationshipType {
     FRIENDS = 1,
-    FRIENDS_PENDING_REQUEST = 2,
-    FRIENDS_SENT_REQUEST = 3,
+    FRIENDS_SENT_REQUEST = 2,
     BLOCKED = 4
 }
 

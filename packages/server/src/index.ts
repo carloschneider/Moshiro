@@ -1,14 +1,8 @@
 /*
     TODO: Remove imports and replace them with imports from index.ts files
 */
-
 'use strict';
 import 'reflect-metadata';
-import { CharacterResolver } from './resolvers/character.resolver';
-import { ActivityResolver } from './resolvers/activity.resolver';
-import { AnimeResolver } from './resolvers/anime.resolver';
-import { UserResolver } from './resolvers/user.resolver';
-import { PostResolver } from './resolvers/post.resolver';
 import { ApolloServer } from 'apollo-server-express';
 import { userJwt, __prod__ } from './constants';
 import authChecker from './utils/authChecker';
@@ -24,6 +18,13 @@ import { Client } from '@elastic/elasticsearch';
 import searchRouter from './routes/search';
 import staticRouter from './routes/static';
 import { Container } from 'typedi';
+import {
+    ActivityResolver,
+    AnimeResolver,
+    PostResolver,
+    UserResolver,
+    CharacterResolver
+} from './resolvers/index';
 import {
     typeDefs as scalarTypeDefs,
     resolvers as scalarResolvers
@@ -117,10 +118,9 @@ const main = async () => {
     redis.on('error', err => {
         return process.stderr.write(err);
     });
-
-    redis.on('connect', async _ => {
-        return process.stdout.write("Redis client connected!\n");
-    })
+    redis.on('connect', () => {
+        console.log("Redis client connected!");
+    });
 
     await redis.connect();
 

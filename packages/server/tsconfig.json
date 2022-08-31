@@ -2,10 +2,11 @@
   "compilerOptions": {
     "target": "es2016",                               
     "module": "commonjs",                               
-    "rootDir": "./src",     
+    "rootDir": "./src",    
+    "baseUrl": "./src", 
     "lib": [
       "es5", "es6", "dom", "dom.iterable"
-    ],                            
+    ],                   
     "moduleResolution": "node",                      
     "resolveJsonModule": true,                        
     "allowJs": false,                                

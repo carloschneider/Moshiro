@@ -44,7 +44,7 @@ export class RelationshipService {
         };
 
         const existingFriendRelation: Relationship | undefined = foundRelations.find((item: Relationship) => {
-            if(item.type == RelationshipType.FRIENDS__REQUEST && item.recipient == req.user._id) return true;
+            if(item.type == RelationshipType.FRIENDS_SENT_REQUEST && item.recipient == req.user._id) return true;
 
             return false;
         });
@@ -72,7 +72,7 @@ export class RelationshipService {
 
            await em.nativeDelete(Relationship, {
                 sender: options._id,
-                type: RelationshipType.FRIENDS__REQUEST
+                type: RelationshipType.FRIENDS_SENT_REQUEST
            });
 
            return newRelation;
@@ -81,7 +81,7 @@ export class RelationshipService {
             let newRelation = em.create(Relationship, {
                 sender: req.user._id,
                 recipient: options._id,
-                type: RelationshipType.FRIENDS__REQUEST
+                type: RelationshipType.FRIENDS_SENT_REQUEST
             });
 
             await em.persistAndFlush(newRelation);
