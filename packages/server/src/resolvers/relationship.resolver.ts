@@ -3,7 +3,7 @@ import { Service } from "typedi";
 import { GqlContext } from "../constants";
 import { Relationship } from "../entities/relationship.entity";
 import { User } from "../entities/user.entity";
-import { createRelationInput, deleteRelationInput } from "../inputs/relationship.inputs";
+import { createRelationInput, deleteRelationInput, fetchRelationInput } from "../inputs/relationship.inputs";
 import { RelationshipService } from "../services/relationship.service";
 
 @Resolver()
@@ -32,9 +32,9 @@ export class RelationshipResolver {
     @Query(() => [Relationship])
     async fetchRelations(
         @Ctx() { req, res, redis, elastic, em }: GqlContext,
-        @Arg('options') options: deleteRelationInput
-    ): Promise<Relationship> {
-        return this.service.fetchRelation({ req, res, redis, elastic, em, options });
+        @Arg('options') options: fetchRelationInput
+    ): Promise<Relationship[]> {
+        return this.service.fetchRelations({ req, res, redis, elastic, em, options });
     }
 
     @FieldResolver(() => User)

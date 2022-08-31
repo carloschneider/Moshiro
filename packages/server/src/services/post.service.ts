@@ -97,7 +97,7 @@ export class PostService {
             Post, 
             query,
             {
-                offset: options.page * options.perPage,
+                offset: (options.page - 1) * options.perPage,
                 limit: options.perPage
             }
         );

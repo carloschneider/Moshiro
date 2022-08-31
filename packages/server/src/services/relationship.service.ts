@@ -3,7 +3,7 @@ import { Service } from "typedi";
 import { GqlContext } from "../constants";
 import { Relationship, RelationshipType } from "../entities/relationship.entity";
 import { User } from "../entities/user.entity";
-import { createRelationInput, deleteRelationInput } from "../inputs/relationship.inputs";
+import { createRelationInput, deleteRelationInput, fetchRelationInput } from "../inputs/relationship.inputs";
 
 @Service()
 export class RelationshipService {
@@ -90,10 +90,26 @@ export class RelationshipService {
         }
     };
 
-    async fetchRelation(
-        { }: GqlContext & { options: deleteRelationInput }
-    ): Promise<Relationship> {
-        return new Relationship();
+    async fetchRelations(
+        { options, em, req }: GqlContext & { options: fetchRelationInput }
+    ): Promise<Relationship[]> {
+        const found: Relationship[] = await em.find(Relationship, {
+            $or: [
+                {
+                    type: options.type,
+                    sender: req.user._id
+                }, 
+                {
+                    type: options.type,
+                    recipient: req.user._id
+                }
+            ]
+        }, {
+            offset: (options.page - 1) * options.perPage,
+            limit: options.perPage
+        });
+
+        return found;
     };
 
     async removeRelation(

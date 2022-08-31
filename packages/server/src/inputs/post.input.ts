@@ -46,10 +46,10 @@ export class PostFetchInput {
 
     @Field(() => Number, {
         nullable: true,
-        defaultValue: 0,
+        defaultValue: 1,
         description: "Number of page to fetch"
     })
-    @Min(0)
+    @Min(1)
     page!: number;
 
     @Field(() => Number, {
