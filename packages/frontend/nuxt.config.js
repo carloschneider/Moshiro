@@ -30,7 +30,19 @@ export default {
   modules: [
     '@chakra-ui/nuxt',
     '@nuxtjs/emotion',
+    '@nuxtjs/axios',
+    '@nuxtjs/auth-next'
   ],
+
+  // Nuxtjs/auth configuration
+  auth: {
+  },
+
+  // Storybook configuration
+  storybook: {
+    port: 4000
+  },
+  
   build: {
   }
 }
