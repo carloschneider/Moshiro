@@ -13,6 +13,8 @@ import { ListInput } from "../inputs/user.inputs";
 import { ObjectId } from "@mikro-orm/mongodb";
 import { GqlContext } from "../constants";
 import { Anime } from "./anime.entity";
+import { Relationship } from "./relationship.entity";
+import { Post } from "./post.entity";
 
 @ObjectType()
 @Entity()
@@ -82,5 +84,17 @@ export class User {
         nullable: true,
         description: "List of anime user is watching"
     })
-    list?: Anime[];
+    anime?: Anime[];
+
+    @Field(() => [Relationship], {
+        nullable: true,
+        description: "List of user's relationships"
+    })
+    relationships?: Relationship[];
+
+    @Field(() => [Post], {
+        nullable: true,
+        description: "List of user's posts"
+    })
+    posts?: Post[];
 }

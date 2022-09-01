@@ -9,6 +9,7 @@ import fs from 'node:fs';
 import { 
     AuthResponse,
     FetchUserListInput,
+    FetchUserRelationshipsInput,
     LoginInput,
     MeResponse,
     RegisterInput,
@@ -20,8 +21,11 @@ import {
     Anime,
     User,
     Activity,
-    ActivityType
+    ActivityType,
+    RelationshipType,
+    Relationship
 } from '../entities/index'
+import e from 'express';
 
 @Service()
 export class UserService {
@@ -257,5 +261,39 @@ export class UserService {
 
         // @ts-ignore
         return found.length == 0 ? null : found;
+    }
+
+    async fetchUserRelationships(
+        user: User,
+        { em, options, req }: GqlContext & { options: FetchUserRelationshipsInput }
+    ) {
+        if(
+            (options.type == RelationshipType.FRIENDS_SENT_REQUEST || 
+            options.type == RelationshipType.BLOCKED)
+            && !req.user._id.equals(user._id)
+        ) {
+            throw new Error("You are not authorized to do this!");
+        };
+
+        return await em.find(Relationship, {
+            $or: [
+                {
+                    recipient: user._id
+                },
+                {
+                    sender: user._id
+                }
+            ]
+        }, {
+            limit: options.perPage,
+            offset: (options.page - 1) * options.perPage
+        });
+    }
+
+    async fetchUserPosts(
+        _user: User,
+        { }: GqlContext
+    ) {
+
     }
 }

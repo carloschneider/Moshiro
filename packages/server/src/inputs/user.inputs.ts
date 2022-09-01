@@ -2,7 +2,10 @@ import { IsBase64, IsEmail, Length, Max, MaxLength, Min, MinLength } from 'class
 import { Field, InputType, ObjectType, registerEnumType } from 'type-graphql';
 import { IsImageFormat } from '../decorators/isImageFormat';
 import { IsObjectId } from '../decorators/isObjectid';
-import { User } from '../entities/user.entity';
+import {
+    RelationshipType,
+    User
+} from '../entities/index'
 
 @InputType()
 export class RegisterInput implements Partial<User> {
@@ -68,6 +71,33 @@ export class ToggleInput {
     @Field(() => InputActivityType)
     type!: InputActivityType;
 }
+
+@InputType()
+export class FetchUserRelationshipsInput {
+    @Field(() => RelationshipType, {
+        nullable: false,
+        description: `Type of relationship to fetch, friend request and blocked types
+                      are only possible to get as an author or recipient of these records`,
+    })
+    type!: RelationshipType;
+
+    @Field(() => Number, {
+        nullable: true,
+        description: "Page number",
+        defaultValue: 1
+    })
+    @Min(1)
+    page!: number;
+
+    @Field(() => Number, {
+        nullable: true,
+        description: "Number of results to fetch",
+        defaultValue: 10
+    })
+    @Min(1)
+    @Max(25)
+    perPage!: number;
+};
 
 @InputType()
 export class FetchUserListInput {

@@ -19,14 +19,17 @@ import {
     MeResponse,
     ToggleResponse,
     ToggleInput,
-    FetchUserListInput
+    FetchUserListInput,
+    FetchUserRelationshipsInput
 } from '../inputs/user.inputs';
 import { Service } from 'typedi';
 import { UserService } from '../services/user.service';
 import { Ratelimiter } from '../middleware/ratelimit';
 import { 
     Anime,
-    User
+    Relationship,
+    User,
+    Post
 } from '../entities/index';
 
 @Service()
@@ -73,7 +76,7 @@ export class UserResolver {
     }
 
     @FieldResolver(() => [Anime])
-    async list(
+    async anime(
         @Root() item: User,
         @Ctx() { em, res, req, redis, elastic }: GqlContext,
         @Arg('options') options: FetchUserListInput
@@ -87,4 +90,21 @@ export class UserResolver {
             options
         })
     }
+
+    @FieldResolver(() => [Relationship])
+    async relationships(
+        @Root() item: User,
+        @Ctx() { em, res, req, redis, elastic }: GqlContext,
+        @Arg('options') options: FetchUserRelationshipsInput
+    ) {
+        return this.service.fetchUserRelationships(item, { em, res, req, redis, elastic, options });
+    };
+
+    @FieldResolver(() => [Post])
+    async posts(
+        @Root() item: User,
+        @Ctx() { em, res, req, redis, elastic }: GqlContext,
+    ) {
+        return this.service.fetchUserPosts(item, { em, res, req, redis, elastic });
+    };
 }
